@@ -1,0 +1,157 @@
+@import "../../assets/fonts/iconfont.css";
+
+.production-main {
+    margin-top: 80px;
+}
+
+.top-tab {
+    z-index: 5;
+    background-color: #fff;
+    width: 100%;
+    height: 80px;
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: center;
+
+    .top-choose {
+        padding-top: 15px;
+        width: 35%;
+        //border: 1px solid #ff3b15;
+
+        .top-text {
+            display: block;
+            text-align: center;
+        }
+
+        .top-slide {
+            width: 60%;
+            margin: 20px auto;
+            height: 7px;
+            border-radius: 2px;
+            background-color: black;
+        }
+    }
+
+
+}
+
+.tonic-cont {
+    width: 100vw;
+    //background-color: #f8ffda;
+    height: calc(100vh - 80px);
+    //min-height: calc(100vh - 80px);
+
+    .tonic-cont-a {
+        margin: 0 auto;
+        width: calc(100% - 50px);
+        min-height: 200vh;
+
+        .nutrition-list {
+            margin-top: 40px;
+            width: 100%;
+            height: 50px;
+            background-color: rgba(84, 83, 82, 0.2);
+            border-radius: 30px;
+            display: flex;
+            justify-content: left;
+
+            .nutrition-name {
+                color: #333;
+                box-sizing: border-box;
+                height: 60px;
+                margin-top: -5px;
+                padding-top: 13px;
+                display: inline-block;
+                width: 25%;
+                font-size: 25px;
+                text-align: center;
+                border-radius: 55px;
+                //background-color: #ffe93e;
+            }
+        }
+
+        .nutrition-introduce {
+            margin: 50px auto;
+            line-height: 45px;
+            width: calc(100% - 150px);
+
+            .cont {
+                display: block;
+                font-size: 24px;
+            }
+        }
+
+        .pill-list {
+            width: calc(50% - 30px);
+            box-shadow: 0 0 15px #b1b1b1;
+            border-radius: 9px;
+            display: inline-block;
+            margin: 35px 15px;
+
+            .pill-img {
+                overflow: hidden;
+                border-top-left-radius: 9px;
+                border-top-right-radius: 9px;
+                width: 100%;
+                padding: 30px 0;
+                background-color: #ff8e45;
+
+                .pill-ui {
+                    display: block;
+                    margin: 0 auto;
+                    width: 80px;
+                    height: 80px;
+                }
+            }
+
+            .pill-cont {
+                box-sizing: border-box;
+                padding: 30px 30px;
+                background-color: white;
+
+                .pill-cont-head {
+                    padding-bottom: 15px;
+                    border-bottom: 1px solid #d3d3d3;
+
+                    .pill-name {
+                        font-size: 28px;
+                        letter-spacing: 6px;
+                        line-height: 45px;
+                    }
+
+                    .pill-usage {
+                        font-size: 24px;
+                        letter-spacing: 4px;
+                        line-height: 45px;
+                    }
+
+                    .pill-usage-ui {
+                        .a {
+                            font-size: 28px;
+                            letter-spacing: 10px;
+                        }
+
+                    }
+                }
+
+                .pill-cont-foot {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px 0 0 0;
+
+                    .price {
+                        font-size: 20px;
+                    }
+
+                    .add-icon {
+                        width: 30px;
+                        height: 30px;
+                        background: url("../../assets/images/add.png") 0 0 no-repeat;
+                        background-size: 30px 30px;
+                    }
+                }
+            }
+        }
+    }
+}

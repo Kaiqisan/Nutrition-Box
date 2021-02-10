@@ -22,25 +22,23 @@
 //
 // export default HeadLogo
 
-import Taro, {FC, memo} from "@tarojs/taro";
+import {FC} from "@tarojs/taro";
 // import classnames from "classnames";
-import {View} from "@tarojs/components";
+import {View, Image} from "@tarojs/components";
 import "./index.less";
 import React from "react";
+// import {ComponentClass} from "react";
 
 type Props = {
 
 };
 
-const HeadLogo: any = () => {
-    return <View>dd</View>;
+const HeadLogo: FC<Props> = () => {
+    return <View className='HeadLogo-main'>
+        <Image src={require("../../assets/images/logo.jpg")} className='logo' />
+    </View>;
 };
 
-// export default memo(HeadLogo, (oldProps, newProps) => {
-//     return (
-//         oldProps.fullPage === newProps.fullPage && oldProps.hide === newProps.hide
-//     );
-// });
 export default HeadLogo
 
 
