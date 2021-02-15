@@ -4,6 +4,7 @@ import {Provider} from 'react-redux'
 import configStore from './redux/store'
 
 import './app.less'
+import 'taro-ui/dist/style/index.scss'
 
 const store = configStore();
 
