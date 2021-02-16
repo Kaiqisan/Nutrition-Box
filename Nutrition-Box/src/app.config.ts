@@ -1,10 +1,10 @@
 export default {
     pages: [
+        'pages/mine/index',
         'pages/shoppingCart/index',
         'pages/production/index',
         'pages/main/index',
         'pages/report/index',
-        'pages/mine/index'
     ],
     window: {
         backgroundTextStyle: 'light',

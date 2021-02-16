@@ -4,7 +4,7 @@ import {View, Button, Text, Image} from '@tarojs/components'
 // import Taro from "@tarojs/taro"
 import './index.less'
 
-import { AtActivityIndicator } from 'taro-ui'
+// import { AtActivityIndicator } from 'taro-ui'
 
 
 // #region 书写注意
@@ -67,7 +67,7 @@ class Report extends Component<IProps, PageState> {
     render() {
         return (
             <View className='report-main'>
-                <AtActivityIndicator size={35}> </AtActivityIndicator>
+                {/*<AtActivityIndicator size={35}> </AtActivityIndicator>*/}
                 <Image className='not-found-img' src={require("../../assets/images/not-found.png")} />
                 <Text className='no-report'>暂无报告...</Text>
                 <Button className='btn'>立即填问卷</Button>

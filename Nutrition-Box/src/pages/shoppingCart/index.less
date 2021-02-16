@@ -1,80 +1,151 @@
 .shoppingCart-main {
     background-color: #f6f6f6;
     width: 100%;
-    min-height: 100vh;
-    padding: 35px 30px;
-    box-sizing: border-box;
 }
 
 .all-pro {
-    .title {
-        display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: calc(100vh - 120px);
+
+    .block {
+        padding: 35px 30px;
+
+        .title {
+            display: block;
+        }
+
+        .production-a {
+            width: 100%;
+            background-color: white;
+            padding: 10px 15px;
+            margin: 20px 0;
+            box-sizing: border-box;
+            border-radius: 8px;
+
+            .production {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                margin: 30px 0;
+
+                .cont {
+                    margin: 0 30px 0 20px;
+                    display: flex;
+                    justify-content: left;
+                    width: 70%;
+
+                    .cont-img {
+                        width: 180px;
+                        height: 180px;
+                        border-radius: 15px;
+                    }
+
+                    .cont-text {
+                        margin-left: 30px;
+                        width: calc(70% - 50px);
+                        height: 180px;
+
+                        .name {
+                            height: 140px;
+                            display: block;
+                            font-size: 25px;
+                            line-height: 35px;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical; /* 如果浏览器内核不是WebKit的话就无法支持该方法 */
+                            -webkit-line-clamp: 4; /* 希望三行后溢出显示省略号 */
+                            overflow: hidden;
+                        }
+
+                        .price {
+                            display: block;
+                        }
+                    }
+                }
+
+                .edit {
+                    background-color: white;
+                    border: 1px solid #fcff4c;
+                    width: 130px;
+                    height: 60px;
+                    font-size: 22px;
+                    letter-spacing: 5px;
+                    border-radius: 30px;
+                }
+
+                .edit::after {
+                    border: none;
+                }
+            }
+        }
     }
 
-    .production {
-        width: 100%;
-        background-color: white;
-        padding: 40px 15px;
-        box-sizing: border-box;
-        margin: 20px 0;
-        border-radius: 8px;
+
+}
+
+.select-menu {
+    border-top: 1px solid #e2e1e0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 35px;
+    background-color: white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+
+    .settlement {
         display: flex;
-        flex-direction: row;
+        justify-content: right;
 
-        .btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            border: 1px solid #a6a6a6;
-            margin: auto 0;
-        }
+        .price {
+            margin: 0 30px;
 
-        .cont {
-            margin: 0 30px 0 20px;
-            display: flex;
-            justify-content: left;
-            width: 70%;
-
-            .cont-img {
-                width: 180px;
-                height: 180px;
-                border-radius: 15px;
+            .price-count {
+                display: block;
+                font-size: 26px;
+                font-weight: 900;
             }
 
-            .cont-text {
-                margin-left: 30px;
-                width: calc(70% - 50px);
-                height: 180px;
-
-                .name {
-                    height: 140px;
-                    display: block;
-                    font-size: 25px;
-                    line-height: 35px;
-                    display: -webkit-box;
-                    -webkit-box-orient: vertical; /* 如果浏览器内核不是WebKit的话就无法支持该方法 */
-                    -webkit-line-clamp: 4; /* 希望三行后溢出显示省略号 */
-                    overflow: hidden;
-                }
-
-                .price {
-                    display: block;
-                }
+            .tip {
+                font-size: 23px;
+                color: #7F7F7F;
             }
         }
 
-        .edit {
-            background-color: white;
-            border: 1px solid #fcff4c;
-            width: 150px;
-            height: 60px;
-            font-size: 25px;
-            letter-spacing: 5px;
-            border-radius: 30px;
+        .submit {
+            width: 160px;
+            height: 75px;
+            font-size: 28px;
+            box-sizing: border-box;
+            display: block;
+            padding: 0 0 0 0;
+            background-color: #fcff4c;
+            border-radius: 40px;
+            font-weight: 900;
         }
 
-        .edit::after {
+        .submit::after {
             border: none;
         }
     }
+}
+
+.btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid #a6a6a6;
+    margin: auto 0;
+    box-sizing: border-box;
+}
+
+.btn-a {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin: auto 0;
+    background: url("../../assets/images/selected.png") no-repeat;
+    background-size: 40px 40px;
 }
