@@ -156,7 +156,41 @@ class Production extends Component<IProps, PageState> {
                                 </View>
                             </View>
                         </View>
-                        
+                        <View className='pill-list'>
+                            <View className='pill-img'>
+                                <Image className='pill-ui' src={require("../../assets/images/pill.png")}/>
+                            </View>
+                            <View className='pill-cont'>
+                                <View className='pill-cont-head'>
+                                    <View className='pill-name'>维生素B族</View>
+                                    <View className='pill-usage'>能量队长</View>
+                                    <View className='pill-usage-ui'>
+                                        <Text className='iconfont a'>&#xe646;&#xe652;</Text>
+                                    </View>
+                                </View>
+                                <View className='pill-cont-foot'>
+                                    <Text className='price'>40元/月（30颗）</Text>
+                                    <View className='add-icon'> </View>
+                                </View>
+                            </View>
+                        </View><View className='pill-list'>
+                            <View className='pill-img'>
+                                <Image className='pill-ui' src={require("../../assets/images/pill.png")}/>
+                            </View>
+                            <View className='pill-cont'>
+                                <View className='pill-cont-head'>
+                                    <View className='pill-name'>维生素B族</View>
+                                    <View className='pill-usage'>能量队长</View>
+                                    <View className='pill-usage-ui'>
+                                        <Text className='iconfont a'>&#xe646;&#xe652;</Text>
+                                    </View>
+                                </View>
+                                <View className='pill-cont-foot'>
+                                    <Text className='price'>40元/月（30颗）</Text>
+                                    <View className='add-icon'> </View>
+                                </View>
+                            </View>
+                        </View>
                     </View>
                 </ScrollView>
             </View>

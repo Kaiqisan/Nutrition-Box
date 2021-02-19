@@ -3,8 +3,7 @@ import React, {Component, ComponentClass} from 'react'
 
 import {connect} from 'react-redux'
 import {View, Button, Text, RichText} from '@tarojs/components'
-
-// import Taro from "@tarojs/taro"
+import Taro from "@tarojs/taro"
 
 import {add, minus, asyncAdd} from '../../redux/actions/counter'
 
@@ -164,7 +163,7 @@ class Main extends Component<IProps, PageState> {
                 <RichText nodes={this.state.nodes}/>
                 <View className='body'>
                     <Text className='body-title'>Simply A Better Day</Text>
-                    <Button className='body-btn'>开始测试</Button>
+                    <Button className='body-btn' onClick={this.startTest.bind(this)}>开始测试</Button>
                 </View>
                 <View className='foot'>
                     <Text className='foot-cont'>已为</Text>
@@ -189,6 +188,12 @@ class Main extends Component<IProps, PageState> {
 
     getVal(): void {
         console.log(this.props.counter.num);
+    }
+
+    startTest(): void {
+        Taro.navigateTo({
+            url: '/pages/confirmPage/index'
+        }).then()
     }
 }
 

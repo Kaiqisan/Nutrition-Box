@@ -1,9 +1,10 @@
 export default {
     pages: [
+        'pages/main/index',
+        'pages/confirmPage/index',
         'pages/mine/index',
         'pages/shoppingCart/index',
         'pages/production/index',
-        'pages/main/index',
         'pages/report/index',
     ],
     window: {
@@ -46,7 +47,7 @@ export default {
                 text: "我的",
                 iconPath: "./assets/images/home.png",
                 selectedIconPath: "./assets/images/home.png"
-            }
+            },
         ]
     }
 }

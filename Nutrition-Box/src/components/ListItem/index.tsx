@@ -1,5 +1,5 @@
 import {FC} from "@tarojs/taro";
-import {View} from "@tarojs/components";
+import {Image, View} from "@tarojs/components";
 import "./index.less";
 import React from "react";
 
@@ -12,16 +12,18 @@ type Props = {
     rightFontSize?: number,
     rightFontWeight?: number,
     rightWord?: string,
+    paddingTop?: number
+    paddingBottom?: number,
     hasLeftIcon?: boolean,
     hasRightIcon?: boolean,
     iconUrl?: string,
 };
 
-const ListItem: FC<Props> = ({leftFontSize, leftColor, leftFontWeight, leftWord, rightFontSize, rightColor, rightFontWeight, rightWord, hasLeftIcon, hasRightIcon, iconUrl}) => {
-    return <View className='HeadLogo-main'>
+const ListItem: FC<Props> = ({leftFontSize, leftColor, leftFontWeight, leftWord, rightFontSize, rightColor, rightFontWeight, rightWord, hasLeftIcon, hasRightIcon, iconUrl, paddingTop, paddingBottom}) => {
+    return <View className='HeadLogo-main' style={{padding: `${paddingTop}px 0 ${paddingBottom}px 0`}}>
         <View className='left-info'>
-            <View className='ui'
-                  style={{backgroundImage: `url('${iconUrl}')`, display: hasLeftIcon ? 'block' : 'none'}}> </View>
+            <Image className='ui' src={`${iconUrl}`}
+                  style={{display: hasLeftIcon ? 'block' : 'none'}} />
             <View className='text'
                   style={{
                       fontSize: `${leftFontSize}px`,
@@ -51,6 +53,8 @@ ListItem.defaultProps = {
     rightColor: 'black',
     rightFontWeight: 500,
     rightWord: '右内容',
+    paddingTop: 10,
+    paddingBottom: 10,
     hasLeftIcon: false,
     hasRightIcon: true,
     iconUrl: ''
