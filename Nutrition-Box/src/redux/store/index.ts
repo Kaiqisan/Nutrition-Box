@@ -9,16 +9,16 @@ const composeEnhancers =
             // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
         }) : compose;
 
-const middlewares = [
+const middleWares = [
     thunkMiddleware
 ];
 
 if (process.env.NODE_ENV === 'development' && process.env.TARO_ENV !== 'quickapp') {
-    middlewares.push(require('redux-logger').createLogger())
+    middleWares.push(require('redux-logger').createLogger())
 }
 
 const enhancer = composeEnhancers(
-    applyMiddleware(...middlewares),
+    applyMiddleware(...middleWares),
     // other store enhancers if any
 );
 

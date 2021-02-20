@@ -7,11 +7,23 @@ import Taro from '@tarojs/taro'
 
 import api from '../../services/api'
 
+import {setIsLogin, setSelfInfo} from '../../redux/actions/app'
+
 import ListItem from "../../components/ListItem";
 
-type PageStateProps = {}
+import {selfInfoType} from "../../utils/staticType";
 
-type PageDispatchProps = {}
+type PageStateProps = {
+    app: {
+        isLogin: boolean,
+        selfInfo: selfInfoType
+    }
+}
+
+type PageDispatchProps = {
+    setIsLogin: (val: boolean) => void,
+    setSelfInfo: (val: selfInfoType) => void
+}
 
 type IProps = PageStateProps & PageDispatchProps
 
@@ -22,12 +34,18 @@ type PageState = {
 
 interface Mine {
     props: IProps,
-
 }
 
-@connect(() => ({
-    // counter
-}), () => ({}))
+@connect(({ app }) => ({
+    app
+}), (dispatch) => ({
+    setIsLogin(val) {
+        dispatch(setIsLogin(val))
+    },
+    setSelfInfo(val) {
+        dispatch(setSelfInfo(val))
+    }
+}))
 class Mine extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
@@ -86,48 +104,24 @@ class Mine extends Component<IProps, PageState> {
     }
 
     login() {
-        console.log('ioj');
-        wx.getUserInfo({
+        let _this: Mine = this;
+        Taro.getUserInfo({
             success(res) {
-                console.log(res);
-                let userInfo = res.userInfo
-                let nickName = userInfo.nickName
-                let avatarUrl = userInfo.avatarUrl
-                let gender = userInfo.gender //性别 0：未知、1：男、2：女
-                let province = userInfo.province
-                let city = userInfo.city
-                let country = userInfo.country
+                let userInfo = res.userInfo;
+                _this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
+                _this.props.setIsLogin(true);
+                // let nickName = userInfo.nickName;
+                // let avatarUrl = userInfo.avatarUrl;
+                // let gender = userInfo.gender; //性别 0：未知、1：男、2：女
+                // let province = userInfo.province;
+                // let city = userInfo.city;
+                // let country = userInfo.country;
             },
             fail(err) {
                 console.log(err);
             }
+        }).then(r => {
         })
-        // Taro.getUserInfo({
-        //     success(res) {
-        //         console.log(res);
-        //     },
-        //     fail(err) {
-        //         console.log(err);
-        //     }
-        // }).then(res => {
-        //     console.log(res);
-        // }).catch(err => {
-        //     console.log(err);
-        // })
-        // wx.login({
-        //     success(res) {
-        //         if (res.code) {
-        //             //发起网络请求
-        //             api.get('/user/login', {code: res.code}).then(res => {
-        //                 console.log(res, 'ok');
-        //             }).catch(err => {
-        //                 console.log(err, 'err');
-        //             });
-        //         } else {
-        //             console.log('登录失败！' + res.errMsg)
-        //         }
-        //     }
-        // })
     }
 
     componentDidMount(): void {
@@ -138,11 +132,19 @@ class Mine extends Component<IProps, PageState> {
         return <View className='mine-main'>
             <View className='bg'> </View>
             <View className='on-the-bg'>
-                <Button openType='getUserInfo' onClick={this.login.bind(this)}>点击登录</Button>
                 <View className='basic-info'>
-                    <Image className='avatar' src={require('../../assets/images/avatar-demo.jpg')}/>
+                    {
+                        this.props.app.isLogin ?
+                            <Image className='avatar' src={this.props.app.selfInfo.avatarUrl}/> :
+                            <View className='avatar' style={{backgroundColor: 'white'}}> </View>
+                    }
+
                     <View className='text-info'>
-                        <Text className='nick'>Kaiqisan</Text>
+                        {
+                            this.props.app.isLogin ?
+                                <Text className='nick'>{this.props.app.selfInfo.nick}</Text> :
+                                <Button className='nick btn' openType='getUserInfo' onClick={this.login.bind(this)}>点击登录</Button>
+                        }
                         <View className='level'>Lv.0</View>
                     </View>
                 </View>
@@ -172,6 +174,7 @@ class Mine extends Component<IProps, PageState> {
                     }
                 </View>
             </View>
+
         </View>
     }
 
