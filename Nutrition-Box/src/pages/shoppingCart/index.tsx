@@ -4,6 +4,8 @@ import './index.less'
 import {Button, Image, ScrollView, Text, View} from "@tarojs/components";
 import * as React from "react";
 
+import api from "../../services/api";
+
 type PageStateProps = {}
 
 type PageDispatchProps = {}
@@ -11,8 +13,14 @@ type PageDispatchProps = {}
 type IProps = PageStateProps & PageDispatchProps
 
 type PageState = {
-    goodsList: Array<boolean>,
-    allSelect: boolean
+    goodsSelectList: Array<boolean>,
+    allSelect: boolean,
+    goodsList: Array<goodsListType>
+}
+
+type goodsListType = {
+    month: number,
+    boxId: string
 }
 
 interface ShoppingCart {
@@ -20,24 +28,25 @@ interface ShoppingCart {
 }
 
 @connect(() => ({
-    // counter
+
 }), () => ({}))
 class ShoppingCart extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
         this.state = {
-            goodsList: [false, false, false, false, false],
+            goodsSelectList: [false, false, false, false, false],
+            goodsList: [],
             allSelect: false
         }
     }
 
     doSelect(i): void {
-        let afterList = this.state.goodsList;
+        let afterList = this.state.goodsSelectList;
         afterList[i] = !afterList[i];
         this.setState({
-            goodsList: afterList
+            goodsSelectList: afterList
         }, (): void => {
-            let hasAllSelected = this.state.goodsList.every((item: boolean): boolean => {
+            let hasAllSelected = this.state.goodsSelectList.every((item: boolean): boolean => {
                 return item
             });
             this.setState({
@@ -53,13 +62,15 @@ class ShoppingCart extends Component<IProps, PageState> {
             allSelect: doAllSelect
         }, () => {
             this.setState({
-                goodsList: this.state.goodsList.fill(doAllSelect)
+                goodsSelectList: this.state.goodsSelectList.fill(doAllSelect)
             })
         });
     }
 
     componentDidMount(): void {
-
+        api.post('/cart/get', {openId: 'oX0RQ6O9lAF50z99XyqN0LDGE1L4'}).then(res => {
+            console.log(res);
+        })
     }
 
     render() {
@@ -69,7 +80,7 @@ class ShoppingCart extends Component<IProps, PageState> {
                     <Text className='title'>所有产品</Text>
                     <View className='production-a'>
                         {
-                            this.state.goodsList.map((item, i) => {
+                            this.state.goodsSelectList.map((item, i) => {
                                 return <View className='production' key={i}>
                                     <View className={item ? 'btn-a' : 'btn'}
                                           onClick={this.doSelect.bind(this, i)}> </View>

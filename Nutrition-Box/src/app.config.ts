@@ -1,5 +1,6 @@
 export default {
     pages: [
+        'pages/packDetails/index',
         'pages/main/index',
         'pages/confirmPage/index',
         'pages/mine/index',

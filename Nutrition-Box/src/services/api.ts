@@ -6,19 +6,27 @@ import basePath from "../utils/basePath";
 // import { AtToast } from "taro-ui"
 
 export default {
-    baseOptions(params, method = 'GET') {
+    baseOptions(params, method: 'GET' | 'POST' = 'GET') {
         let {url, data} = params;
-        // let contentType = 'multipart/form-data';
+        let contentType = 'multipart/form-data';
         // contentType = params.contentType || contentType;
         type OptionType = {
             url: string,
             data?: object | string,
-            method?: any,
+            method: 'GET' | 'POST',
             header: object,
-            success: any,
-            error: any,
-            xhrFields: object,
+            success: (res: callBackMessageType) => any,
+            xhrFields: {withCredentials: boolean},
+            timeout: number
         }
+
+        type callBackMessageType = {
+            data: object,
+            header: Record<string, any>,
+            statusCode: number,
+            errMsg: string
+        }
+
         function connectUrl(baseUrl: string, route: string, data?: object): string {
             let query = '';
             if (data) {
@@ -39,12 +47,13 @@ export default {
             data: method === 'GET' ? null : data,
             method: method,
             header: {
-                // 'content-type': contentType,
+                'Content-Type': contentType,
                 // cookie: Taro.getStorageSync('cookies')
             },
             // mode: 'cors',
             xhrFields: {withCredentials: false},
-            success(res): any {
+            timeout: 3000,
+            success(res: callBackMessageType): any {
                 // setCookie(res);
                 if (res.statusCode === HTTP_STATUS.NOT_FOUND) {
                     return '请求资源不存在'
@@ -58,9 +67,6 @@ export default {
                     return res.data
                 }
             },
-            error(e) {
-                console.log(e, 'dd');
-            }
         };
 
         // eslint-disable-next-line

@@ -1,0 +1,165 @@
+@import url("../../assets/fonts/iconfont.css");
+
+.packDetails-main {
+    background-color: #e1e1e1;
+    width: 100vw;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 0 30px 30px 30px;
+}
+
+.top-title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 80px;
+
+    .top-title-left {
+        font-size: 38px;
+        font-weight: 900;
+        margin: auto 0;
+    }
+
+    .top-title-right {
+        margin: auto 0;
+
+        .top-title-right-text {
+            color: #000;
+            font-weight: 900;
+            display: inline-block;
+            font-size: 25px;
+            margin-right: 10px;
+        }
+    }
+}
+
+.pill-list {
+    margin: 15px 0;
+    width: 100%;
+
+    .pill-list-mem {
+        width: 100%;
+        display: flex;
+        justify-content: left;
+
+        .pill-list-mem-left {
+            border-bottom-left-radius: 7px;
+            border-top-left-radius: 7px;
+            width: 70%;
+            box-sizing: border-box;
+            padding: 35px 35px 20px 20px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+
+            .check-icon {
+                margin: 0 20px 0 0;
+                width: 40px;
+                height: 40px;
+                border-radius: 20px;
+                background-color: #ff8e45;
+            }
+
+            .pill-list-mem-left-all-text {
+                width: calc(100% - 60px);
+                margin-top: 5px;
+
+                .pill-list-mem-left-all-text-top {
+                    height: 130px;
+                    border-bottom: 1px solid #bfbfbf;
+
+                    .pill-name {
+                        font-size: 32px;
+                        font-weight: 900;
+                        letter-spacing: 3px;
+                    }
+
+                    .pill-description {
+                        margin-top: 8px;
+                        font-size: 20px;
+                        color: #9d9d9d;
+                    }
+                }
+
+                .pill-list-mem-left-all-text-bottom {
+                    padding: 20px 0 0 0;
+                    display: flex;
+                    justify-content: space-between;
+
+                    .price-info {
+                        font-size: 22px;
+                    }
+                }
+            }
+        }
+
+        .pill-list-mem-right {
+            border-bottom-right-radius: 7px;
+            border-top-right-radius: 7px;
+            width: 30%;
+            background-color: #ff8e45;
+
+            .pill-list-mem-right-img {
+                width: 100px;
+                height: 100px;
+                position: relative;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                display: block;
+            }
+        }
+    }
+}
+
+.bottom-tab {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    box-sizing: border-box;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+
+    .bottom-tab-left {
+        margin: auto 0;
+
+        .bottom-tab-left-text {
+            font-size: 23px;
+            color: #646464;
+            font-weight: 900;
+        }
+    }
+
+    .bottom-tab-right {
+        display: block;
+        width: 40%;
+        height: 80px;
+        margin: auto 0;
+        font-size: 30px;
+        background-color: #fcff4c;
+        color: #000000;
+        font-weight: 900;
+        border-radius: 50px;
+    }
+
+    .bottom-tab-right::after {
+        border: none;
+    }
+}
+
+.go-right-icon {
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    padding: 3px 0 0 5px;
+    display: inline-block;
+    border-radius: 15px;
+    background-color: #525252;
+    font-size: 22px;
+    color: #fff;
+    margin-left: 5px;
+}
