@@ -98,7 +98,6 @@ class Production extends Component<IProps, PageState> {
     }
 
     componentDidMount() {
-        // console.log(this.props)
         this.getNutritionList('a')
     }
 

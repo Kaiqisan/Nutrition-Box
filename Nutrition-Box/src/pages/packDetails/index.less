@@ -4,8 +4,6 @@
     background-color: #e1e1e1;
     width: 100vw;
     min-height: 100vh;
-    box-sizing: border-box;
-    padding: 0 30px 30px 30px;
 }
 
 .top-title {
@@ -37,78 +35,135 @@
     margin: 15px 0;
     width: 100%;
 
+
     .pill-list-mem {
-        width: 100%;
-        display: flex;
-        justify-content: left;
+        position: relative;
 
-        .pill-list-mem-left {
-            border-bottom-left-radius: 7px;
-            border-top-left-radius: 7px;
-            width: 70%;
-            box-sizing: border-box;
-            padding: 35px 35px 20px 20px;
-            background-color: white;
+        .inner-pill-list-mem {
+            width: 100%;
+            height: 236px;
+            background-color: #ff513c;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            border-radius: 7px;
 
-            .check-icon {
-                margin: 0 20px 0 0;
-                width: 40px;
-                height: 40px;
-                border-radius: 20px;
+            .outer-delete-text {
+                width: 25%;
+                height: inherit;
+
+                .delete-text {
+                    text-align: center;
+                    position: relative;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    color: white;
+                    letter-spacing: 3px;
+                }
+            }
+        }
+
+        .outer-pill-list-mem {
+            transition: 0.5s;
+            width: 100%;
+            display: flex;
+            justify-content: left;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
+
+            .pill-list-mem-left {
+                border-bottom-left-radius: 7px;
+                border-top-left-radius: 7px;
+                width: 75%;
+                box-sizing: border-box;
+                padding: 35px 35px 20px 20px;
+                background-color: white;
+                display: flex;
+                justify-content: space-between;
+
+                .check-icon {
+                    margin: 0 20px 0 0;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 20px;
+                    background-color: #ff8e45;
+                }
+
+                .pill-list-mem-left-all-text {
+                    width: calc(100% - 60px);
+
+                    .pill-list-mem-left-all-text-top {
+                        height: 130px;
+                        border-bottom: 1px solid #bfbfbf;
+
+                        .pill-name {
+                            font-size: 32px;
+                            font-weight: 900;
+                            letter-spacing: 3px;
+                        }
+
+                        .pill-description {
+                            margin-top: 8px;
+                            font-size: 20px;
+                            color: #9d9d9d;
+                        }
+                    }
+
+                    .pill-list-mem-left-all-text-bottom {
+                        padding: 20px 0 0 0;
+                        display: flex;
+                        justify-content: space-between;
+
+                        .price-info {
+                            font-size: 22px;
+                        }
+                    }
+                }
+            }
+
+            .pill-list-mem-right {
+                border-bottom-right-radius: 7px;
+                border-top-right-radius: 7px;
+                width: 25%;
                 background-color: #ff8e45;
-            }
 
-            .pill-list-mem-left-all-text {
-                width: calc(100% - 60px);
-                margin-top: 5px;
-
-                .pill-list-mem-left-all-text-top {
-                    height: 130px;
-                    border-bottom: 1px solid #bfbfbf;
-
-                    .pill-name {
-                        font-size: 32px;
-                        font-weight: 900;
-                        letter-spacing: 3px;
-                    }
-
-                    .pill-description {
-                        margin-top: 8px;
-                        font-size: 20px;
-                        color: #9d9d9d;
-                    }
-                }
-
-                .pill-list-mem-left-all-text-bottom {
-                    padding: 20px 0 0 0;
-                    display: flex;
-                    justify-content: space-between;
-
-                    .price-info {
-                        font-size: 22px;
-                    }
+                .pill-list-mem-right-img {
+                    width: 100px;
+                    height: 100px;
+                    position: relative;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    display: block;
                 }
             }
         }
+    }
+}
 
-        .pill-list-mem-right {
-            border-bottom-right-radius: 7px;
-            border-top-right-radius: 7px;
-            width: 30%;
-            background-color: #ff8e45;
+.add-other {
+    box-sizing: border-box;
+    padding: 25px 40px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 8px;
 
-            .pill-list-mem-right-img {
-                width: 100px;
-                height: 100px;
-                position: relative;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                display: block;
-            }
-        }
+    .left-text {
+        font-size: 38px;
+        font-weight: 900;
+        margin: auto 0;
+    }
+
+    .add-icon {
+        width: 80px;
+        height: 80px;
     }
 }
 
@@ -155,11 +210,21 @@
     width: 30px;
     height: 30px;
     box-sizing: border-box;
-    padding: 3px 0 0 5px;
+    padding: 4px 0 0 6px;
     display: inline-block;
     border-radius: 15px;
     background-color: #525252;
     font-size: 22px;
     color: #fff;
     margin-left: 5px;
+}
+
+.packDetails-body {
+    width: 100%;
+    height: calc(100vh - 120px);
+
+    .inner-packDetails {
+        box-sizing: border-box;
+        padding: 0 30px 30px 30px;
+    }
 }
