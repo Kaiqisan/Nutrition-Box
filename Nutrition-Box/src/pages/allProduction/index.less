@@ -1,0 +1,128 @@
+.allProduction-main {
+    background-color: #e1e1e1;
+    width: 100vw;
+    min-height: 100vh;
+
+    .all-pro {
+        width: 100%;
+        height: calc(100vh - 120px);
+
+        .inner-pro {
+            box-sizing: border-box;
+            padding: 0 30px 30px 30px;
+
+            .head {
+                height: 80px;
+                display: flex;
+                justify-content: left;
+
+                .top-title {
+                    display: block;
+                    font-size: 38px;
+                    font-weight: 900;
+                    margin: auto 0;
+                }
+
+            }
+
+            .production {
+                width: 100%;
+                display: flex;
+                justify-content: left;
+                margin: 20px auto;
+
+                .production-left {
+                    border-bottom-left-radius: 7px;
+                    border-top-left-radius: 7px;
+                    background-color: white;
+                    width: 75%;
+                    box-sizing: border-box;
+                    padding: 35px 35px 30px 35px;
+
+                    .production-left-name {
+                        display: block;
+                        font-size: 30px;
+                        font-weight: 900;
+                    }
+
+                    .production-left-desc {
+                        display: block;
+                        font-size: 21px;
+                        margin-top: 10px;
+                        color: #7F7F7F;
+                    }
+
+                    .production-left-bottom {
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 60px;
+
+                        .production-left-bottom-btn {
+                            font-size: 24px;
+                            background-color: #fcff4c;
+                            color: #000;
+                            border-radius: 50px;
+                            padding: 10px 34px;
+                        }
+
+                        .production-left-bottom-data {
+
+                            .quantity {
+                                font-size: 25px;
+                                font-weight: 900;
+                            }
+
+                            .per {
+                                font-size: 22px;
+                            }
+                        }
+                    }
+                }
+
+                .production-right {
+                    border-bottom-right-radius: 7px;
+                    border-top-right-radius: 7px;
+                    width: 25%;
+                    background-color: #ffbcbe;
+
+                    .production-right-img {
+                        width: 100px;
+                        height: 100px;
+                        position: relative;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                        display: block;
+                    }
+
+                }
+            }
+        }
+    }
+
+    .bottom-tab {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 120px;
+        background-color: white;
+        box-sizing: border-box;
+        padding: 0 30px;
+
+        .bottom-tab-btn {
+            margin-top: 13px;
+            display: block;
+            border-radius: 40px;
+            background-color: #fcff4c;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .bottom-tab-btn::after {
+            border: none;
+        }
+    }
+}
+

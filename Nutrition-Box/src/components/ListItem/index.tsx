@@ -23,7 +23,7 @@ const ListItem: FC<Props> = ({leftFontSize, leftColor, leftFontWeight, leftWord,
     return <View className='HeadLogo-main' style={{padding: `${paddingTop}px 0 ${paddingBottom}px 0`}}>
         <View className='left-info'>
             <Image className='ui' src={`${iconUrl}`}
-                  style={{display: hasLeftIcon ? 'block' : 'none'}} />
+                   style={{display: hasLeftIcon ? 'block' : 'none'}}/>
             <View className='text'
                   style={{
                       fontSize: `${leftFontSize}px`,

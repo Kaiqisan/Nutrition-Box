@@ -102,17 +102,20 @@ class Production extends Component<IProps, PageState> {
     }
 
     getNutritionList(params: string): void {
-        api.get('/product/class', {cla: params}).then(({data}) => {
-            if (typeof data !== 'object') {
-                this.setState({
-                    messageIsOpen: true
-                });
-            } else {
-                this.setState({
-                    nutritionList: data.data
-                })
-            }
-        })
+        this.setState({
+            messageIsOpen: true
+        });
+        // api.get('/product/class', {cla: params}).then(({data}) => {
+        //     if (typeof data !== 'object') {
+        //         this.setState({
+        //             messageIsOpen: true
+        //         });
+        //     } else {
+        //         this.setState({
+        //             nutritionList: data.data
+        //         })
+        //     }
+        // })
 
     }
 

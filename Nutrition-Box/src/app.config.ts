@@ -1,8 +1,9 @@
 export default {
     pages: [
-        'pages/packDetails/index',
         'pages/main/index',
+        'pages/packDetails/index',
         'pages/confirmPage/index',
+        'pages/allProduction/index',
         'pages/mine/index',
         'pages/shoppingCart/index',
         'pages/production/index',

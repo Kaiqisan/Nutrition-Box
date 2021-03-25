@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import './index.less'
 import {Button, Image, ScrollView, Text, View} from "@tarojs/components";
 import * as React from "react";
+import Taro from '@tarojs/taro'
 
 import api from "../../services/api";
 
@@ -27,9 +28,7 @@ interface ShoppingCart {
     props: IProps
 }
 
-@connect(() => ({
-
-}), () => ({}))
+@connect(() => ({}), () => ({}))
 class ShoppingCart extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
@@ -67,6 +66,14 @@ class ShoppingCart extends Component<IProps, PageState> {
         });
     }
 
+    doEdit(): void {
+        Taro.navigateTo({
+            url: '/pages/packDetails/index'
+        }).then().catch(err => {
+            console.log(err);
+        }) 
+    }
+
     componentDidMount(): void {
         api.post('/cart/get', {openId: 'oX0RQ6O9lAF50z99XyqN0LDGE1L4'}).then(res => {
             console.log(res);
@@ -91,7 +98,7 @@ class ShoppingCart extends Component<IProps, PageState> {
                                             <Text className='price'>￥783</Text>
                                         </View>
                                     </View>
-                                    <Button className='edit'>编辑</Button>
+                                    <Button className='edit' onClick={this.doEdit.bind(this)}>编辑</Button>
                                 </View>
                             })
                         }

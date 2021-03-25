@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
-import React, {Component, ComponentClass, useState} from "react";
-import {Button, Image, ScrollView, TaroEvent, Text, View} from "@tarojs/components";
+import React, {Component, ComponentClass} from "react";
+import {Button, Image, ScrollView, Text, View} from "@tarojs/components";
 import {connect} from 'react-redux';
 import './index.less'
 
@@ -36,19 +36,27 @@ class PackDetails extends Component<IProps, PageState> {
 
     outerPillListMem: OuterPillListMem;
 
-    refOuterPillListMem = (node) => {this.outerPillListMem = node};
+    refOuterPillListMem = (node) => {
+        this.outerPillListMem = node
+    };
 
     testOnMouseMove(e) {
         console.log(e, '2');
     }
 
-    getBgHeight():void {
+    getBgHeight(): void {
         let a = Taro.createSelectorQuery();
         a.selectAll('.packDetails-body').boundingClientRect((res) => {
             this.setState({
                 hei: res.height
             })
         }).exec();
+    }
+
+    addOther(): void {
+        Taro.navigateTo({
+            url: '/pages/allProduction/index'
+        }).then()
     }
 
     render() {
@@ -80,7 +88,7 @@ class PackDetails extends Component<IProps, PageState> {
                             <OuterPillListMem ref={this.refOuterPillListMem}/>
                         </View>
                     </View>
-                    <View className='add-other'>
+                    <View className='add-other' onClick={this.addOther.bind(this)}>
                         <Text className='be-block left-text'>添加其他补剂</Text>
                         <Image className='add-icon be-block' src={require('../../assets/images/add-yellow.png')}/>
                     </View>
@@ -103,7 +111,7 @@ interface OuterPillListMem {
     props: IProps;
 }
 
-type outerPillListMemState =  {
+type outerPillListMemState = {
     deleteTabIsOpen: boolean,
     objOuterPillListMem: object | null,
     currentLeft: number
@@ -118,9 +126,14 @@ class OuterPillListMem extends Component<IProps, outerPillListMemState> {
             currentLeft: 0
         }
     }
+
     componentDidMount(): void {
         this.setState({
             objOuterPillListMem: document.getElementsByClassName('outer-pill-list-mem')
+        });
+
+        setTimeout(() => {
+
         })
     }
 
@@ -146,8 +159,11 @@ class OuterPillListMem extends Component<IProps, outerPillListMemState> {
     }
 
     render() {
-        return <View className='outer-pill-list-mem' onTouchMove={this.openDeleteTab.bind(this)} onTouchStart={this.setCurrentHeight.bind(this)} style={{transform: `translateX(${this.state
-                .deleteTabIsOpen ? '-25%' : '0'})`}}>
+        return <View className='outer-pill-list-mem' onTouchMove={this.openDeleteTab.bind(this)}
+                     onTouchStart={this.setCurrentHeight.bind(this)} style={{
+            transform: `translateX(${this.state
+                .deleteTabIsOpen ? '-25%' : '0'})`
+        }}>
             <View className='pill-list-mem-left'>
                 <View className='check-icon'> </View>
                 <View className='pill-list-mem-left-all-text'>
