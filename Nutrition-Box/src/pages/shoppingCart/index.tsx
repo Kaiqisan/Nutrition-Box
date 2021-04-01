@@ -71,12 +71,15 @@ class ShoppingCart extends Component<IProps, PageState> {
             url: '/pages/packDetails/index'
         }).then().catch(err => {
             console.log(err);
-        }) 
+        })
     }
 
     componentDidMount(): void {
+        console.log('ok');
         api.post('/cart/get', {openId: 'oX0RQ6O9lAF50z99XyqN0LDGE1L4'}).then(res => {
-            console.log(res);
+            console.log(res, 'ddd');
+        }).catch(err => {
+            console.log(err, 'ddd');
         })
     }
 

@@ -105,22 +105,45 @@ class Mine extends Component<IProps, PageState> {
 
     login() {
         let _this: Mine = this;
-        Taro.getUserInfo({
+        Taro.login({
             success(res) {
-                let userInfo = res.userInfo;
-                _this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
-                _this.props.setIsLogin(true);
+                console.log(res, 'dd');
+                // let userInfo = res.userInfo;
+                // _this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
+                // _this.props.setIsLogin(true);
+                // console.log(res);
                 // let nickName = userInfo.nickName;
                 // let avatarUrl = userInfo.avatarUrl;
                 // let gender = userInfo.gender; //性别 0：未知、1：男、2：女
                 // let province = userInfo.province;
                 // let city = userInfo.city;
                 // let country = userInfo.country;
+                // TODO 完善登录
+                api.get('/user/login',  {code: res.code}).then(res => {
+                    console.log(res.data);
+                    Taro.setStorage({
+                        data: String(res.data.openid),
+                        key: "openid",
+                    });
+                    Taro.setStorage({
+                        data: String(res.data.sessionKey),
+                        key: "sessionKey",
+                    });
+                    Taro.getUserInfo({
+                        success(res) {
+                            let userInfo = res.userInfo;
+                            _this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
+                            _this.props.setIsLogin(true);
+                        }
+                    }).then()
+                }).catch(err => {
+                    console.log(err);
+                })
             },
             fail(err) {
                 console.log(err);
             }
-        }).then(r => {
+        }).then(() => {
         })
     }
 

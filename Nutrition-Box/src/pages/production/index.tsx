@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {View, Text, Image, ScrollView} from '@tarojs/components'
 import {AtToast} from "taro-ui"
 
-// import Taro from "@tarojs/taro"
+import Taro from "@tarojs/taro"
 
 import './index.less'
 
@@ -102,20 +102,20 @@ class Production extends Component<IProps, PageState> {
     }
 
     getNutritionList(params: string): void {
-        this.setState({
-            messageIsOpen: true
-        });
-        // api.get('/product/class', {cla: params}).then(({data}) => {
-        //     if (typeof data !== 'object') {
-        //         this.setState({
-        //             messageIsOpen: true
-        //         });
-        //     } else {
-        //         this.setState({
-        //             nutritionList: data.data
-        //         })
-        //     }
-        // })
+        // this.setState({
+        //     messageIsOpen: true
+        // });
+        api.get('/product/class', {cla: params}).then(({data}) => {
+            if (typeof data !== 'object') {
+                this.setState({
+                    messageIsOpen: true
+                });
+            } else {
+                this.setState({
+                    nutritionList: data.data
+                })
+            }
+        })
 
     }
 
@@ -131,6 +131,15 @@ class Production extends Component<IProps, PageState> {
         });
         let params: string = i === 0 ? 'a' : i === 1 ? 'b' : 'c';
         this.getNutritionList(params)
+    }
+
+    doEdit() {
+        console.log('ok');
+        Taro.navigateTo({
+            url: '/pages/packDetails/index'
+        }).then().catch(() => {
+            // console.log(err);
+        })
     }
 
     render() {
@@ -188,6 +197,9 @@ class Production extends Component<IProps, PageState> {
                         }
                     </View>
                 </ScrollView>
+                <View className='shopping-cart-box' onClick={this.doEdit.bind(this)}>
+                    <Image className='icon' src={require('../../assets/images/shoppingCartBox.png')} />
+                </View>
                 <AtToast isOpened={this.state.messageIsOpen} text={'网络出错'} status={'error'}> </AtToast>
             </View>
         )

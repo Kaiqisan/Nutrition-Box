@@ -4,8 +4,19 @@ import {Button, Image, ScrollView, Text, View} from "@tarojs/components";
 import {connect} from 'react-redux';
 import './index.less'
 
+import duplicateCodes from '../../utils/duplicateCodes'
+
 type PageState = {
-    hei: number
+    hei: number,
+    confirmPageIsOpen: boolean,
+    month: boolean,
+    sizeType: Array<{
+        size: number,
+        perDayPrice: number,
+        price: number,
+        isChoose: boolean
+    }>,
+    selectIdList: string[]
 }
 
 type PageStateProps = {}
@@ -23,7 +34,24 @@ class PackDetails extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
         this.state = {
-            hei: 0
+            hei: 0,
+            confirmPageIsOpen: false,
+            month: true,
+            sizeType: [
+                {
+                    size: 1,
+                    perDayPrice: 8,
+                    price: 245.00,
+                    isChoose: true
+                },
+                {
+                    size: 3,
+                    perDayPrice: 7,
+                    price: 662.40,
+                    isChoose: false
+                }
+            ],
+            selectIdList: []
         };
     }
 
@@ -31,6 +59,9 @@ class PackDetails extends Component<IProps, PageState> {
     componentDidMount(): void {
         setTimeout(() => {
             this.getBgHeight();
+            // this.setState({
+            //     selectIdList: getIdList()
+            // })
         }, 200)
     }
 
@@ -40,8 +71,8 @@ class PackDetails extends Component<IProps, PageState> {
         this.outerPillListMem = node
     };
 
-    testOnMouseMove(e) {
-        console.log(e, '2');
+    testOnMouseMove(e): void {
+        // console.log(e, '2');
     }
 
     getBgHeight(): void {
@@ -59,9 +90,44 @@ class PackDetails extends Component<IProps, PageState> {
         }).then()
     }
 
+    finish(): void {
+        setTimeout(() => {
+            this.setState({
+                selectIdList: duplicateCodes.getIdList(this.refs.refSubOrder)
+            });
+        }, 200);
+        this.setState({
+            confirmPageIsOpen: true
+        })
+    }
+
+    chooseSize(i: number): void {
+        this.setState({
+            month: i === 0
+        });
+        let sizeType = this.state.sizeType;
+        sizeType.map(item => {
+            item.isChoose = false;
+            return item
+        });
+        sizeType[i].isChoose = true;
+        this.setState({
+            sizeType
+        })
+    }
+
+    closeConfirmPage(e) {
+        console.log(e.target.id);
+        if (!duplicateCodes.isClickOutSide(e.target.id, this.state.selectIdList)) {
+            this.setState({
+                confirmPageIsOpen: false
+            })
+        }
+    }
+
     render() {
-        return <View className='packDetails-main' onTouchMove={this.testOnMouseMove.bind(this)}>
-            <ScrollView className='packDetails-body' scrollY={true}>
+        return <View className='packDetails-main'>
+            <ScrollView className='packDetails-body' scrollY={true} onTouchMove={this.testOnMouseMove.bind(this)}>
                 <View className='inner-packDetails'>
                     <View className='top-title'>
                         <View className='top-title-left'>自选补剂</View>
@@ -101,8 +167,54 @@ class PackDetails extends Component<IProps, PageState> {
                     <Text className='bottom-tab-left-text'>去看看评价</Text>
                     <Text className='iconfont icon-tubiaozhizuomoban go-right-icon'> </Text>
                 </View>
-                <Button className='bottom-tab-right'>完成(2种)</Button>
+                <Button className='bottom-tab-right' onClick={this.finish.bind(this)}>完成(2种)</Button>
             </View>
+
+            {
+                this.state.confirmPageIsOpen ? <View onClick={this.closeConfirmPage.bind(this)}>
+                    <View className='block'>
+
+                    </View>
+
+                    {/*  提交订单  */}
+                    <View className='sub-order' ref='refSubOrder'>
+                        <View className='choose-size module'>
+                            <Text className='choose-size-title'>选择规格</Text>
+                            {
+                                this.state.sizeType.map((item, i) => {
+                                    return <View className='size' key={i}>
+                                        <View className='size-left'>
+                                            <View className='size-left-month'>
+                                                <View className={item.isChoose ? 'btn-a' : 'btn'}
+                                                      onClick={this.chooseSize.bind(this, i)}> </View>
+                                                <View className='size-left-monthPack'>{item.size}月装</View>
+                                            </View>
+                                            <View className='size-left-per-month'>{item.perDayPrice}元/天</View>
+                                        </View>
+                                        <View className='size-right'>
+                                            <Text className='price'>￥{item.price}</Text>
+                                        </View>
+                                    </View>
+                                })
+                            }
+                        </View>
+                        <View className='freight module'>
+                            <View className='freight-head'>运费</View>
+                            <View className='freight-details'>
+                                <Text className='freight-details-info'>
+                                    {this.state.month ? 1 : 3}月装{this.state.month ? '' : '免'}运费
+                                </Text>
+                                <Text className='freight-details-info'>
+                                    ￥{this.state.month ? 19 : 0}
+                                </Text>
+                            </View>
+                        </View>
+                        <Button className='bottom-tab-btn'>确认</Button>
+                    </View>
+                </View> : ''
+            }
+
+
         </View>
     }
 }

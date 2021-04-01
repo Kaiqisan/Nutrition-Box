@@ -1,7 +1,7 @@
 export default {
     pages: [
-        'pages/main/index',
         'pages/packDetails/index',
+        'pages/main/index',
         'pages/confirmPage/index',
         'pages/allProduction/index',
         'pages/mine/index',

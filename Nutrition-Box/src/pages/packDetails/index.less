@@ -228,3 +228,125 @@
         padding: 0 30px 30px 30px;
     }
 }
+
+.block {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(100, 100, 100, .35);
+    z-index: 4;
+}
+
+.module {
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 30px 25px;
+    width: 100%;
+    background-color: white;
+    margin: 20px 0;
+}
+
+.sub-order {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    z-index: 5;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: #7F7F7F;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 30px 40px;
+
+    .bottom-tab-btn {
+        margin-top: 13px;
+        display: block;
+        border-radius: 40px;
+        background-color: #fcff4c;
+        font-weight: 900;
+        color: #000;
+    }
+
+    .freight {
+        .freight-head {
+            width: 100%;
+        }
+
+        .freight-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+
+            .freight-details-info {
+                font-size: 27px;
+            }
+        }
+    }
+
+    .choose-size {
+        .choose-size-title {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .size {
+            width: 100%;
+            display: flex;
+            margin: 20px 0 10px 0;
+            justify-content: space-between;
+
+            .size-left {
+                width: 60%;
+                display: flex;
+                justify-content: space-between;
+
+                .size-left-per-month {
+                    margin: auto 15px;
+                    font-size: 25px;
+                    font-weight: 900;
+                }
+
+                .size-left-month {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .size-left-monthPack {
+                        margin: auto 15px;
+                        font-size: 25px;
+                    }
+
+
+                    .btn {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 20px;
+                        border: 1px solid #a6a6a6;
+                        margin: auto 0;
+                        box-sizing: border-box;
+                    }
+
+                    .btn-a {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 20px;
+                        margin: auto 0;
+                        background: url("../../assets/images/selected.png") no-repeat;
+                        background-size: 40px 40px;
+                    }
+                }
+            }
+
+            .size-right {
+                margin: auto 0;
+
+                .price {
+                    display: block;
+                    font-size: 25px;
+                    font-weight: 900;
+                }
+            }
+        }
+    }
+}

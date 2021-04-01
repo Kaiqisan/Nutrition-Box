@@ -8,8 +8,8 @@ import basePath from "../utils/basePath";
 export default {
     baseOptions(params, method: 'GET' | 'POST' = 'GET') {
         let {url, data} = params;
-        let contentType = 'multipart/form-data';
-        // contentType = params.contentType || contentType;
+        let contentType = 'application/json';
+        contentType = params.contentType || contentType;
         type OptionType = {
             url: string,
             data?: object | string,
@@ -43,8 +43,10 @@ export default {
         }
 
         const option: OptionType = {
-            url: method === 'GET' ? connectUrl(basePath.baseUrl, url, data) : basePath.baseUrl + url,
-            data: method === 'GET' ? null : data,
+            // url: method === 'GET' ? connectUrl(basePath.baseUrl, url, data) : basePath.baseUrl + url,
+            // data: method === 'GET' ? null : data,
+            url: basePath.baseUrl + url,
+            data: data,
             method: method,
             header: {
                 'Content-Type': contentType,
