@@ -4,7 +4,10 @@ import {Button, Image, ScrollView, Text, View} from "@tarojs/components";
 import {connect} from 'react-redux';
 import './index.less'
 
+
 import duplicateCodes from '../../utils/duplicateCodes'
+import {nutritionListType} from '../../utils/staticType'
+import api from "../../services/api";
 
 type PageState = {
     hei: number,
@@ -16,12 +19,31 @@ type PageState = {
         price: number,
         isChoose: boolean
     }>,
-    selectIdList: string[]
+    selectIdList: string[],
+    pillList: Array<pillListType>,
+    openId: string
 }
 
-type PageStateProps = {}
+type pillListType = {
+    classification: string,
+    description: string,
+    dosage: number,
+    id: string,
+    picPath: string
+    price: number,
+    productName: string
+    isHide: boolean
+}
 
-type PageDispatchProps = {}
+type PageStateProps = {
+    app: {
+        shoppingCart: string[]
+    }
+}
+
+type PageDispatchProps = {
+    setShoppingCart: () => void
+}
 
 type IProps = PageStateProps & PageDispatchProps
 
@@ -29,7 +51,9 @@ interface PackDetails {
     props: IProps;
 }
 
-@connect(() => ({}), () => ({}))
+@connect(({app}) => ({
+    app
+}), () => ({}))
 class PackDetails extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
@@ -51,18 +75,51 @@ class PackDetails extends Component<IProps, PageState> {
                     isChoose: false
                 }
             ],
-            selectIdList: []
+            selectIdList: [],
+            pillList: [],
+            openId: ''
         };
     }
 
+    componentDidShow() {
+        // this.props.setShoppingCart()
+        // TODO:获取已经在购物车的商品
+        let openId: string;
+        Taro.getStorage({
+            key: 'openid',
+            success(res) {
+                openId = res.data
+            }
+        }).then(() => {
+            api.post('/box/get', {openId}).then(res => {
+                if (res.data.data) {
+                    let list = res.data.data;
+                    list.forEach(item => {
+                        Object.assign(item, {isHide: false})
+                    });
+                    this.setState({
+                        pillList: res.data.data
+                    });
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+        });
+    }
 
-    componentDidMount(): void {
+
+    async componentDidMount() {
+        Taro.getStorage({
+            key: 'openid',
+            success: (res) => {
+                this.setState({
+                    openId: res.data
+                })
+            }
+        });
         setTimeout(() => {
             this.getBgHeight();
-            // this.setState({
-            //     selectIdList: getIdList()
-            // })
-        }, 200)
+        }, 200);
     }
 
     outerPillListMem: OuterPillListMem;
@@ -71,7 +128,7 @@ class PackDetails extends Component<IProps, PageState> {
         this.outerPillListMem = node
     };
 
-    testOnMouseMove(e): void {
+    testOnMouseMove(): void {
         // console.log(e, '2');
     }
 
@@ -117,12 +174,67 @@ class PackDetails extends Component<IProps, PageState> {
     }
 
     closeConfirmPage(e) {
-        console.log(e.target.id);
         if (!duplicateCodes.isClickOutSide(e.target.id, this.state.selectIdList)) {
             this.setState({
                 confirmPageIsOpen: false
             })
         }
+    }
+
+    remove(i: number, id: string) {
+        api.post('/box/out', {openId: this.state.openId, productId: id}).then(() => {
+            let list = this.state.pillList;
+            list.splice(i, 1);
+            this.setState({
+                pillList: list
+            })
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    closeAll() {
+        let list = this.state.pillList;
+        this.state.pillList.forEach(item => {
+            item.isHide = false
+        });
+        this.setState({
+            pillList: list
+        })
+    }
+
+    touchClose() {
+        this.closeAll();
+    }
+
+    // action true为打开， false为关闭
+    openById(id: string, action: boolean) {
+        let list = this.state.pillList;
+        if (action) {
+            // this.state.pillList.some((item, i) => {
+            //     if (item.id === id) {
+            //         list[i].isHide = false;
+            //         return false
+            //     }
+            //     return true
+            // })
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].id === id) {
+                    list[i].isHide = false;
+                    break
+                }
+            }
+        } else {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].id === id) {
+                    list[i].isHide = true;
+                    break
+                }
+            }
+        }
+        this.setState({
+            pillList: list
+        })
     }
 
     render() {
@@ -137,22 +249,19 @@ class PackDetails extends Component<IProps, PageState> {
                         </View>
                     </View>
                     <View className='pill-list'>
-                        <View className='pill-list-mem'>
-                            <View className='inner-pill-list-mem' style={{height: this.state.hei + 'px'}}>
-                                <View className='outer-delete-text'>
-                                    <Text className='be-block delete-text'>删除</Text>
+                        {
+                            this.state.pillList.map((item, i) => {
+                                return <View className='pill-list-mem' key={i}>
+                                    <View className='inner-pill-list-mem' style={{height: this.state.hei + 'px'}}>
+                                        <View className='outer-delete-text'>
+                                            <Text className='be-block delete-text'
+                                                  onClick={this.remove.bind(this, i, item.id)}>删除</Text>
+                                        </View>
+                                    </View>
+                                    <OuterPillListMem ref={this.refOuterPillListMem} allproperties={item} openById={this.openById.bind(this)} touchClose={this.touchClose.bind(this)} key={i}/>
                                 </View>
-                            </View>
-                            <OuterPillListMem ref={this.refOuterPillListMem}/>
-                        </View>
-                        <View className='pill-list-mem'>
-                            <View className='inner-pill-list-mem' style={{height: this.state.hei + 'px'}}>
-                                <View className='outer-delete-text'>
-                                    <Text className='be-block delete-text'>删除</Text>
-                                </View>
-                            </View>
-                            <OuterPillListMem ref={this.refOuterPillListMem}/>
-                        </View>
+                            })
+                        }
                     </View>
                     <View className='add-other' onClick={this.addOther.bind(this)}>
                         <Text className='be-block left-text'>添加其他补剂</Text>
@@ -167,7 +276,8 @@ class PackDetails extends Component<IProps, PageState> {
                     <Text className='bottom-tab-left-text'>去看看评价</Text>
                     <Text className='iconfont icon-tubiaozhizuomoban go-right-icon'> </Text>
                 </View>
-                <Button className='bottom-tab-right' onClick={this.finish.bind(this)}>完成(2种)</Button>
+                <Button className='bottom-tab-right'
+                        onClick={this.finish.bind(this)}>完成({this.state.pillList.length}种)</Button>
             </View>
 
             {
@@ -213,14 +323,19 @@ class PackDetails extends Component<IProps, PageState> {
                     </View>
                 </View> : ''
             }
-
-
         </View>
     }
 }
 
 interface OuterPillListMem {
-    props: IProps;
+    props: compIprops;
+}
+
+type compIprops = {
+    ref: any,
+    allproperties: pillListType,
+    openById: (id: string, action: boolean) => void,
+    touchClose: () => void
 }
 
 type outerPillListMemState = {
@@ -229,13 +344,13 @@ type outerPillListMemState = {
     currentLeft: number
 }
 
-class OuterPillListMem extends Component<IProps, outerPillListMemState> {
+class OuterPillListMem extends Component<compIprops, outerPillListMemState> {
     constructor(props) {
         super(props);
         this.state = {
             deleteTabIsOpen: false,
             objOuterPillListMem: null,
-            currentLeft: 0
+            currentLeft: 0,
         }
     }
 
@@ -251,13 +366,9 @@ class OuterPillListMem extends Component<IProps, outerPillListMemState> {
 
     openDeleteTab(e) {
         if (this.state.currentLeft > e.touches[0].pageX) {
-            this.setState({
-                deleteTabIsOpen: true
-            })
+            this.props.openById(this.props.allproperties.id, false)
         } else {
-            this.setState({
-                deleteTabIsOpen: false
-            })
+            this.props.openById(this.props.allproperties.id, true)
         }
         this.setState({
             currentLeft: e.touches[0].pageX
@@ -272,20 +383,20 @@ class OuterPillListMem extends Component<IProps, outerPillListMemState> {
 
     render() {
         return <View className='outer-pill-list-mem' onTouchMove={this.openDeleteTab.bind(this)}
-                     onTouchStart={this.setCurrentHeight.bind(this)} style={{
-            transform: `translateX(${this.state
-                .deleteTabIsOpen ? '-25%' : '0'})`
+                     onTouchStart={(event) => {this.setCurrentHeight(event);this.props.touchClose()}} style={{
+            transform: `translateX(${this.props
+                .allproperties.isHide ? '-25%' : '0'})`
         }}>
             <View className='pill-list-mem-left'>
                 <View className='check-icon'> </View>
                 <View className='pill-list-mem-left-all-text'>
                     <View className='pill-list-mem-left-all-text-top'>
-                        <Text className='pill-name be-block'>维生素B组</Text>
-                        <Text className='pill-description be-block'>提供能量,抗疲劳;适合熬夜,饮酒或运动人群</Text>
+                        <Text className='pill-name be-block'>{this.props.allproperties.productName}</Text>
+                        <Text className='pill-description be-block'>{this.props.allproperties.description}</Text>
                     </View>
                     <View className='pill-list-mem-left-all-text-bottom'>
-                        <Text className='price-info be-block'>1颗/天</Text>
-                        <Text className='price-info be-block'>40元/月</Text>
+                        <Text className='price-info be-block'>{this.props.allproperties.dosage}颗/天</Text>
+                        <Text className='price-info be-block'>{this.props.allproperties.price}元/月</Text>
                     </View>
                 </View>
             </View>

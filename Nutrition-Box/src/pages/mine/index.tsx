@@ -1,7 +1,7 @@
 import {Component, ComponentClass} from 'react'
 import {connect} from 'react-redux'
 import './index.less'
-import {Button, Image, Text, View} from "@tarojs/components";
+import {Button, Image, Text, View, OpenData} from "@tarojs/components";
 import * as React from "react";
 import Taro from '@tarojs/taro'
 
@@ -36,7 +36,7 @@ interface Mine {
     props: IProps,
 }
 
-@connect(({ app }) => ({
+@connect(({app}) => ({
     app
 }), (dispatch) => ({
     setIsLogin(val) {
@@ -104,6 +104,16 @@ class Mine extends Component<IProps, PageState> {
     }
 
     login() {
+        wx.showModal({
+            title: '小贴士',
+            content: '如果要体验完整的功能，需要点击获取头像昵称来授权小程序使用哦',
+            showCancel: false,
+            confirmText: '已知悉',
+            success(res) {
+                // ...
+            }
+        });
+
         let _this: Mine = this;
         Taro.login({
             success(res) {
@@ -119,7 +129,7 @@ class Mine extends Component<IProps, PageState> {
                 // let city = userInfo.city;
                 // let country = userInfo.country;
                 // TODO 完善登录
-                api.get('/user/login',  {code: res.code}).then(res => {
+                api.get('/user/login', {code: res.code}).then(res => {
                     console.log(res.data);
                     Taro.setStorage({
                         data: String(res.data.openid),
@@ -139,12 +149,15 @@ class Mine extends Component<IProps, PageState> {
                 }).catch(err => {
                     console.log(err);
                 })
+
             },
             fail(err) {
-                console.log(err);
+                console.log(err, '拒绝授权');
             }
         }).then(() => {
         })
+
+
     }
 
     componentDidMount(): void {
@@ -156,17 +169,23 @@ class Mine extends Component<IProps, PageState> {
             <View className='bg'> </View>
             <View className='on-the-bg'>
                 <View className='basic-info'>
+                    {/*src={this.props.app.selfInfo.avatarUrl}*/}
+                    {/*<OpenData type='userAvatarUrl' className='avatar'/>*/}
                     {
                         this.props.app.isLogin ?
-                            <Image className='avatar' src={this.props.app.selfInfo.avatarUrl}/> :
+                            <Image src={this.props.app.selfInfo.avatarUrl} className='avatar'/>
+                            :
                             <View className='avatar' style={{backgroundColor: 'white'}}> </View>
                     }
 
                     <View className='text-info'>
                         {
                             this.props.app.isLogin ?
-                                <Text className='nick'>{this.props.app.selfInfo.nick}</Text> :
-                                <Button className='nick btn' openType='getUserInfo' onClick={this.login.bind(this)}>点击登录</Button>
+                                // {this.props.app.selfInfo.nick}</OpenData>
+                                <OpenData type="userNickName" className='nick'/> :
+                                <Button className='nick btn' openType='getUserInfo'
+                                        onGetUserInfo={this.login.bind(this)}
+                                >点击登录</Button>
                         }
                         <View className='level'>Lv.0</View>
                     </View>
@@ -197,7 +216,6 @@ class Mine extends Component<IProps, PageState> {
                     }
                 </View>
             </View>
-
         </View>
     }
 

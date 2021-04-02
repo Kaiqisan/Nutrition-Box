@@ -1,12 +1,12 @@
 export default {
     pages: [
+        'pages/production/index',
         'pages/packDetails/index',
         'pages/main/index',
         'pages/confirmPage/index',
         'pages/allProduction/index',
         'pages/mine/index',
         'pages/shoppingCart/index',
-        'pages/production/index',
         'pages/report/index',
     ],
     window: {
