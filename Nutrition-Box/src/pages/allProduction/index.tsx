@@ -44,6 +44,7 @@ class AllProduction extends Component<IProps, PageState> {
     }
 
     componentDidShow(): void {
+        let router = Taro.getCurrentInstance().router;
         Taro.getStorage({
             key: 'openid',
             success: (res) => {
@@ -52,50 +53,116 @@ class AllProduction extends Component<IProps, PageState> {
                 })
             }
         }).then(() => {
-            api.post('/box/other', {openId: this.state.openId}).then(({data}) => {
-                if (data.data) {
-                    this.setState({
-                        proList: data.data
-                    });
-                    this.setState({
-                        proListIsInShoppingCart: new Array(data.data.length).fill(false)
-                    });
+            if (router) {
+                if (router.params.boxId === '0') {
+                    api.post('/box/other', {openId: this.state.openId}).then(({data}) => {
+                        if (data.data) {
+                            this.setState({
+                                proList: data.data
+                            });
+                            this.setState({
+                                proListIsInShoppingCart: new Array(data.data.length).fill(false)
+                            });
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    // TODO 购物车的其他商品
+                    if (router.params.list) {
+                        let ids = router.params.list.split('~');
+                        api.post('/product/other', {ids}).then(({data}) => {
+                            if (data.data) {
+                                this.setState({
+                                    proList: data.data
+                                });
+                                this.setState({
+                                    proListIsInShoppingCart: new Array(data.data.length).fill(false)
+                                });
+                            }
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }
+
                 }
-            }).catch(err => {
-                console.log(err);
-            })
+            }
+
         });
     }
 
-    // componentDidShow() {
-    //
-    // }
-
+    componentWillUnmount() {
+        let router = Taro.getCurrentInstance().router;
+        if (router) {
+            if (router.params.boxId !== '0') {
+                let pages = Taro.getCurrentPages();
+                let prevPage = pages[pages.length - 2];
+                let addList: any = [];
+                this.state.proListIsInShoppingCart.forEach((item, i) => {
+                    if (item) {
+                        addList.push(this.state.proList[i])
+                    }
+                });
+                prevPage.setData({
+                    addList
+                })
+            }
+        }
+    }
 
     addPill(i: number, id: string) {
-        api.post('/box/into', {openId: this.state.openId, productId: id}).then(({data}) => {
-            console.log(data);
-            let list = this.state.proListIsInShoppingCart;
-            list[i] = !list[i];
-            this.setState({
-                proListIsInShoppingCart: list
-            })
+        let router = Taro.getCurrentInstance().router;
+        if (router) {
+            if (router.params.boxId === '0') {
+                api.post('/box/into', {openId: this.state.openId, productId: id}).then(({data}) => {
+                    console.log(data);
+                    let list = this.state.proListIsInShoppingCart;
+                    list[i] = !list[i];
+                    this.setState({
+                        proListIsInShoppingCart: list
+                    })
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                let list = this.state.proListIsInShoppingCart;
+                list[i] = !list[i];
+                this.setState({
+                    proListIsInShoppingCart: list
+                })
+            }
+        }
 
-        }).catch(err => {
-            console.log(err);
-        })
     }
 
     removePill(i: number, id: string) {
-        api.post('/box/out', {openId: this.state.openId, productId: id}).then(({data}) => {
-            console.log(data);
-            let list = this.state.proListIsInShoppingCart;
-            list[i] = !list[i];
-            this.setState({
-                proListIsInShoppingCart: list
-            })
-        }).catch(err => {
-            console.log(err);
+        let router = Taro.getCurrentInstance().router;
+        if (router) {
+            if (router.params.boxId === '0') {
+                api.post('/box/out', {openId: this.state.openId, productId: id}).then(({data}) => {
+                    console.log(data);
+                    let list = this.state.proListIsInShoppingCart;
+                    list[i] = !list[i];
+                    this.setState({
+                        proListIsInShoppingCart: list
+                    })
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                let list = this.state.proListIsInShoppingCart;
+                list[i] = !list[i];
+                this.setState({
+                    proListIsInShoppingCart: list
+                })
+            }
+        }
+
+    }
+
+    back() {
+        Taro.navigateBack({
+            delta: 1
         })
     }
 
@@ -141,7 +208,7 @@ class AllProduction extends Component<IProps, PageState> {
                 </View>
             </ScrollView>
             <View className='bottom-tab'>
-                <Button className='bottom-tab-btn'>完成(3种)</Button>
+                <Button className='bottom-tab-btn' onClick={this.back.bind(this)}>完成</Button>
             </View>
         </View>;
     }

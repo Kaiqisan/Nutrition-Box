@@ -43,3 +43,13 @@ export const setShoppingCart = (value: string, means: boolean) => {
         value: store().getState().app.shoppingCart
     }
 };
+
+export const clearShoppingCart = () => {
+    while (store().getState().app.shoppingCart.length) {
+        store().getState().app.shoppingCart.pop()
+    }
+    return {
+        type: SET_SHOPPINGCART,
+        value: store().getState().app.shoppingCart
+    }
+};

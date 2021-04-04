@@ -10,17 +10,19 @@ import './index.less'
 import api from "../../services/api";
 import {nutritionListType} from '../../utils/staticType'
 import duplicateCodes from "../../utils/duplicateCodes";
-import {setShoppingCart, setAllProduction} from '../../redux/actions/app'
+import {setShoppingCart, setAllProduction, clearShoppingCart} from '../../redux/actions/app'
 
 type PageStateProps = {
     app: {
-        shoppingCart: number[]
+        shoppingCart: string[],
+        isLogin: boolean
     }
 }
 
 type PageDispatchProps = {
-    setShoppingCart: (id: number, action: boolean) => void
-    setAllProduction: (allProduction: nutritionListType) => void
+    setShoppingCart: (id: string, action: boolean) => void,
+    setAllProduction: (allProduction: nutritionListType) => void,
+    clearShoppingCart: () => void
 }
 
 
@@ -31,7 +33,11 @@ type PageState = {
     nutritionSubMenuList: Array<nutritionSubMenuListType>,
     nutritionList: Array<nutritionListType>,
     nowNutritionList: Array<nutritionListType>,
-    messageIsOpen: boolean,
+    AtToastMsg: {
+        isOpen: boolean,
+        cont: string,
+        status: 'error' | 'loading' | 'success' | undefined
+    },
     openId: string
 }
 
@@ -55,6 +61,9 @@ interface Production {
     },
     setAllProduction(allProduction: nutritionListType) {
         dispatch(setAllProduction(allProduction))
+    },
+    clearShoppingCart() {
+        dispatch(clearShoppingCart())
     }
 }))
 class Production extends Component<IProps, PageState> {
@@ -88,7 +97,11 @@ class Production extends Component<IProps, PageState> {
             ],
             nutritionList: [],
             nowNutritionList: [],
-            messageIsOpen: false,
+            AtToastMsg: {
+                isOpen: false,
+                cont: '',
+                status: undefined
+            },
             openId: ''
         }
     }
@@ -100,84 +113,109 @@ class Production extends Component<IProps, PageState> {
     componentWillUnmount() {
     }
 
-    componentDidShow() {
-    }
 
     componentDidHide() {
     }
 
     @duplicateCodes.Watch({
-        'app.shoppingCart'(val, oldVal) {
-            console.log(val, oldVal, 'dddddddddddddd');
-        }
+        // 'app.shoppingCart'(val, oldVal) {
+        //     console.log(val, oldVal, 'dddddddddddddd');
+        // }
     })
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<PageState>, snapshot?: any): void {
-        // console.log(prevProps, this.props);
-        // console.log('ok');
+
     }
 
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     console.log(nextProps);
-    //     const {app} = nextProps;
-    //     // 当传入的type发生变化的时候，更新state
-    //     if (app !== prevState.type) {
-    //         return {
-    //             app,
-    //         };
-    //     }
-    //     // 否则，对于state不进行任何操作
-    //     return null;
-    // }
     componentDidMount() {
-        Taro.getStorage({
-            key: 'openid',
-            success: (res) => {
-                this.setState({
-                    openId: res.data
-                })
-            }
-        });
+        if (this.props.app.isLogin) {
+            Taro.getStorage({
+                key: 'openid',
+                success: (res) => {
+                    this.setState({
+                        openId: res.data
+                    })
+                },
+            });
+        }
         this.getNutritionList();
     }
 
-    getNutritionList(): void {
-        api.get('/product/all').then(({data}) => {
-            console.log(data.data);
-            if (typeof data !== 'object') {
-                this.setState({
-                    messageIsOpen: true
-                });
-            } else {
-                data.data.forEach((item) => {
-                    Object.assign(item, {isInShoppingCart: false})
-                });
-                this.setState({
-                    nutritionList: data.data
-                });
-                this.props.setAllProduction(data.data);
-                let paramList = ["vitamin", "mineral", "herbaceous", "tonic"];
-                this.getNutritionListByParams(paramList[0])
-            }
-        });
-
+    componentDidShow() {
+        // TODO:在所有信息获取成功之后才开始渲染
+        this.props.clearShoppingCart();
         let openId: string;
-        Taro.getStorage({
-            key: 'openid',
-            success(res) {
-                openId = res.data
+        new Promise((resolve, reject) => {
+            if (this.props.app.isLogin) {
+                Taro.getStorage({
+                    key: 'openid',
+                    success(res) {
+                        openId = res.data;
+                    },
+                    fail(res) {
+                        console.log(res);
+                    }
+                }).then(() => {
+                    resolve();
+                })
+            } else {
+                resolve()
             }
         }).then(() => {
-            api.post('/box/get', {openId}).then(({data}) => {
-                if (data.data) {
-                    data.data.forEach((item: nutritionListType) => {
-                        setShoppingCart(item.id, true)
+            if (this.props.app.isLogin) {
+                api.post('/box/get', {openId}).then((res) => {
+                    console.log(res, 'ddd');
+                    if (res.data.data) {
+                        res.data.data.forEach((item: nutritionListType) => {
+                            setShoppingCart(item.id, true)
+                        });
+                    }
+                }).catch(err => {
+                    this.setState({
+                        AtToastMsg: {
+                            isOpen: true,
+                            cont: '网络出错',
+                            status: 'error'
+                        }
                     });
+                    console.log(err);
+                })
+            }
+        }).then(() => {
+            api.get('/product/all').then((res) => {
+                console.log(res);
+                if (typeof res.data !== 'object') {
+                    this.setState({
+                        AtToastMsg: {
+                            isOpen: true,
+                            cont: '购物车信息获取失败',
+                            status: 'error'
+                        }
+                    });
+                } else {
+                    res.data.data.forEach((item) => {
+                        Object.assign(item, {isInShoppingCart: false})
+                    });
+                    this.setState({
+                        nutritionList: res.data.data
+                    });
+                    this.props.setAllProduction(res.data.data);
+                    let paramList = ["vitamin", "mineral", "herbaceous", "tonic"];
+                    this.getNutritionListByParams(paramList[0])
                 }
-                console.log(this.props.app.shoppingCart);
-            }).catch(err => {
-                console.log(err);
+            }).catch(() => {
+                this.setState({
+                    AtToastMsg: {
+                        isOpen: true,
+                        cont: '购物车信息获取失败',
+                        status: 'error'
+                    }
+                });
             })
-        });
+        })
+
+    }
+
+    getNutritionList(): void {
 
     }
 
@@ -188,7 +226,6 @@ class Production extends Component<IProps, PageState> {
                 finalList.push(item)
             }
         });
-        console.log(finalList);
         this.setState({
             nowNutritionList: finalList
         })
@@ -211,14 +248,59 @@ class Production extends Component<IProps, PageState> {
     doEdit() {
         console.log('ok');
         Taro.navigateTo({
-            url: '/pages/packDetails/index'
+            url: '/pages/packDetails/index?boxId=0'
         }).then().catch(() => {
-            // console.log(err);
+
         })
     }
 
     setItInShoppingCart(id: string, action: boolean) {
-        this.props.setShoppingCart(id, action)
+        if (this.props.app.isLogin) {
+            this.props.setShoppingCart(id, action);
+            if (action) {
+                api.post('/box/into', {openId: this.state.openId, productId: id}).then(({data}) => {
+                    console.log(data);
+                    setShoppingCart(id, true)
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                api.post('/box/out', {openId: this.state.openId, productId: id}).then(({data}) => {
+                    console.log(data);
+                    setShoppingCart(id, false)
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+        } else {
+            this.settToast(true, '请先登录', undefined);
+            setTimeout(() => {
+                Taro.switchTab({
+                    url: '/pages/mine/index'
+                })
+            }, 1000)
+        }
+    }
+
+    getCart() {
+        console.log(this.props.app.shoppingCart);
+    }
+
+    settToast(isOpened: boolean, text: string, status: 'error' | 'loading' | 'success' | undefined) {
+        let msg = {
+            isOpen: isOpened,
+            cont: text,
+            status
+        }
+        this.setState({
+            AtToastMsg: msg
+        });
+        setTimeout(() => {
+            msg.isOpen = false;
+            this.setState({
+                AtToastMsg: msg
+            });
+        }, 800)
     }
 
     render() {
@@ -269,6 +351,7 @@ class Production extends Component<IProps, PageState> {
                                         <View className='pill-cont-foot'>
                                             <Text className='price'>{item.price}元/月（{item.dosage}颗）</Text>
                                             {
+
                                                 this.props.app.shoppingCart.includes(item.id) ?
                                                     <View className='dec-icon icon'
                                                           onClick={this.setItInShoppingCart.bind(this, item.id, false)}> </View> :
@@ -282,10 +365,14 @@ class Production extends Component<IProps, PageState> {
                         }
                     </View>
                 </ScrollView>
-                <View className='shopping-cart-box' onClick={this.doEdit.bind(this)}>
-                    <Image className='icon' src={require('../../assets/images/shoppingCartBox.png')}/>
-                </View>
-                <AtToast isOpened={this.state.messageIsOpen} text={'网络出错'} status={'error'}> </AtToast>
+                {/* TODO: 在购物车页面没加载的时候隐藏该图标 */}
+                {
+                    this.props.app.isLogin ? <View className='shopping-cart-box' onClick={this.doEdit.bind(this)}>
+                        <Image className='icon' src={require('../../assets/images/shoppingCartBox.png')}/>
+                    </View> : ''
+                }
+                <AtToast isOpened={this.state.AtToastMsg.isOpen} text={this.state.AtToastMsg.cont}
+                         status={this.state.AtToastMsg.status}> </AtToast>
             </View>
         )
     }

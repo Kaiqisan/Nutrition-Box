@@ -43,6 +43,5 @@ export default function app(state: TYPE_INITIAL_STATE = INITIAL_STATE, action: T
 }
 
 function concatState(state, key, val): TYPE_INITIAL_STATE {
-    console.log(val);
     return Object.assign({}, state, {[key]: val})
 }

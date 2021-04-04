@@ -30,7 +30,7 @@ class ConfirmPage extends Component<IProps, PageState>{
 
     render() {
         return <View>
-            ddd
+            问卷页面，待开发中....
         </View>;
     }
 }

@@ -1,7 +1,7 @@
 import React, {Component, ComponentClass} from 'react'
 import {connect} from 'react-redux'
 import {View, Button, Text, Image} from '@tarojs/components'
-// import Taro from "@tarojs/taro"
+import Taro from "@tarojs/taro"
 import './index.less'
 
 // import { AtActivityIndicator } from 'taro-ui'
@@ -64,13 +64,19 @@ class Report extends Component<IProps, PageState> {
         console.log(this.props)
     }
 
+    goConfirmPage() {
+        Taro.navigateTo({
+            url: '/pages/confirmPage/index'
+        })
+    }
+
     render() {
         return (
             <View className='report-main'>
                 {/*<AtActivityIndicator size={35}> </AtActivityIndicator>*/}
                 <Image className='not-found-img' src={require("../../assets/images/not-found.png")} />
                 <Text className='no-report'>暂无报告...</Text>
-                <Button className='btn'>立即填问卷</Button>
+                <Button className='btn' onClick={this.goConfirmPage.bind()}>立即填问卷</Button>
             </View>
         )
     }

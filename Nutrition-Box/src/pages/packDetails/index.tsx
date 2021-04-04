@@ -21,7 +21,8 @@ type PageState = {
     }>,
     selectIdList: string[],
     pillList: Array<pillListType>,
-    openId: string
+    openId: string,
+    testVal: number
 }
 
 type pillListType = {
@@ -77,13 +78,17 @@ class PackDetails extends Component<IProps, PageState> {
             ],
             selectIdList: [],
             pillList: [],
-            openId: ''
+            openId: '',
+            testVal: 0
         };
     }
 
     componentDidShow() {
+        // 返回上一页传值
+
         // this.props.setShoppingCart()
         // TODO:获取已经在购物车的商品
+        let router = Taro.getCurrentInstance().router;
         let openId: string;
         Taro.getStorage({
             key: 'openid',
@@ -91,24 +96,55 @@ class PackDetails extends Component<IProps, PageState> {
                 openId = res.data
             }
         }).then(() => {
-            api.post('/box/get', {openId}).then(res => {
-                if (res.data.data) {
-                    let list = res.data.data;
-                    list.forEach(item => {
-                        Object.assign(item, {isHide: false})
-                    });
-                    this.setState({
-                        pillList: res.data.data
-                    });
+            if (router) {
+                if (router.params.boxId === '0') {
+                    api.post('/box/get', {openId}).then(res => {
+                        if (res.data.data) {
+                            let list = res.data.data;
+                            list.forEach(item => {
+                                Object.assign(item, {isHide: false})
+                            });
+                            this.setState({
+                                pillList: res.data.data
+                            });
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    let pages = Taro.getCurrentPages();
+                    let currPage = pages[pages.length - 1]; //当前页面
+                    let {data} = currPage;
+                    if (data.hasOwnProperty('addList')) {
+                        let list = this.state.pillList;
+                        data.addList.forEach(item => {
+                            Object.assign(item, {isHide: false})
+                        });
+                        list = list.concat(data.addList);
+                        this.setState({
+                            pillList: list
+                        })
+                    } else {
+                        api.get('/cartBox/getAll', {boxId: router.params.boxId}).then(res => {
+                            if (res.data.data) {
+                                let list = res.data.data;
+                                list.forEach(item => {
+                                    Object.assign(item, {isHide: false})
+                                });
+                                this.setState({
+                                    pillList: res.data.data
+                                });
+                            }
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }
                 }
-            }).catch(err => {
-                console.log(err);
-            })
+            }
         });
     }
 
-
-    async componentDidMount() {
+    componentDidMount() {
         Taro.getStorage({
             key: 'openid',
             success: (res) => {
@@ -142,9 +178,17 @@ class PackDetails extends Component<IProps, PageState> {
     }
 
     addOther(): void {
-        Taro.navigateTo({
-            url: '/pages/allProduction/index'
-        }).then()
+        let router = Taro.getCurrentInstance().router;
+        let idList: string[] = [];
+        this.state.pillList.forEach(item => {
+            idList.push(item.id)
+        });
+        if (router) {
+            Taro.navigateTo({
+                url: `/pages/allProduction/index?boxId=${router.params.boxId}&&list=${idList.join('~')}`
+            }).then()
+        }
+
     }
 
     finish(): void {
@@ -155,6 +199,17 @@ class PackDetails extends Component<IProps, PageState> {
         }, 200);
         this.setState({
             confirmPageIsOpen: true
+        }, () => {
+            let [sizeType, sizeType2] = this.state.sizeType;
+            sizeType.price = this.state.pillList.reduce((a, b) => {
+                return b.price + a
+            }, 0);
+            sizeType2.price = Number((sizeType.price * 3 * 0.9).toFixed(2));
+            sizeType.perDayPrice = Math.floor(sizeType.price / 30);
+            sizeType2.perDayPrice = Math.floor(sizeType2.price / 90);
+            this.setState({
+                sizeType: [sizeType, sizeType2]
+            })
         })
     }
 
@@ -182,15 +237,26 @@ class PackDetails extends Component<IProps, PageState> {
     }
 
     remove(i: number, id: string) {
-        api.post('/box/out', {openId: this.state.openId, productId: id}).then(() => {
-            let list = this.state.pillList;
-            list.splice(i, 1);
-            this.setState({
-                pillList: list
-            })
-        }).catch(err => {
-            console.log(err);
-        })
+        let router = Taro.getCurrentInstance().router;
+        if (router) {
+            if (router.params.boxId === '0') {
+                api.post('/box/out', {openId: this.state.openId, productId: id}).then(() => {
+                    let list = this.state.pillList;
+                    list.splice(i, 1);
+                    this.setState({
+                        pillList: list
+                    })
+                }).catch(err => {
+                    console.log(err);
+                })
+            } else {
+                let list = this.state.pillList;
+                list.splice(i, 1);
+                this.setState({
+                    pillList: list
+                })
+            }
+        }
     }
 
     closeAll() {
@@ -237,6 +303,20 @@ class PackDetails extends Component<IProps, PageState> {
         })
     }
 
+    addInCart() {
+        let router = Taro.getCurrentInstance().router;
+        let boxId = router.params.boxId;
+        let productIds: string[] = [];
+        this.state.pillList.forEach(item => {
+            productIds.push(item.id)
+        });
+        api.post('/box/move', {boxId, productIds , month: this.state.month ? 1 : 3}).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     render() {
         return <View className='packDetails-main'>
             <ScrollView className='packDetails-body' scrollY={true} onTouchMove={this.testOnMouseMove.bind(this)}>
@@ -258,7 +338,9 @@ class PackDetails extends Component<IProps, PageState> {
                                                   onClick={this.remove.bind(this, i, item.id)}>删除</Text>
                                         </View>
                                     </View>
-                                    <OuterPillListMem ref={this.refOuterPillListMem} allproperties={item} openById={this.openById.bind(this)} touchClose={this.touchClose.bind(this)} key={i}/>
+                                    <OuterPillListMem ref={this.refOuterPillListMem} allproperties={item}
+                                                      openById={this.openById.bind(this)}
+                                                      touchClose={this.touchClose.bind(this)} key={i}/>
                                 </View>
                             })
                         }
@@ -319,7 +401,7 @@ class PackDetails extends Component<IProps, PageState> {
                                 </Text>
                             </View>
                         </View>
-                        <Button className='bottom-tab-btn'>确认</Button>
+                        <Button className='bottom-tab-btn' onClick={this.addInCart.bind(this)}>确认</Button>
                     </View>
                 </View> : ''
             }
@@ -383,7 +465,10 @@ class OuterPillListMem extends Component<compIprops, outerPillListMemState> {
 
     render() {
         return <View className='outer-pill-list-mem' onTouchMove={this.openDeleteTab.bind(this)}
-                     onTouchStart={(event) => {this.setCurrentHeight(event);this.props.touchClose()}} style={{
+                     onTouchStart={(event) => {
+                         this.setCurrentHeight(event);
+                         this.props.touchClose()
+                     }} style={{
             transform: `translateX(${this.props
                 .allproperties.isHide ? '-25%' : '0'})`
         }}>

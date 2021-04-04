@@ -103,6 +103,16 @@ class Mine extends Component<IProps, PageState> {
         }
     }
 
+    getInfo() {
+        Taro.getUserInfo({
+            success:(res) => {
+                let userInfo = res.userInfo;
+                this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
+                this.props.setIsLogin(true);
+            }
+        }).then()
+    }
+
     login() {
         wx.showModal({
             title: '小贴士',
@@ -115,6 +125,7 @@ class Mine extends Component<IProps, PageState> {
         });
 
         let _this: Mine = this;
+
         Taro.login({
             success(res) {
                 console.log(res, 'dd');
@@ -139,13 +150,7 @@ class Mine extends Component<IProps, PageState> {
                         data: String(res.data.sessionKey),
                         key: "sessionKey",
                     });
-                    Taro.getUserInfo({
-                        success(res) {
-                            let userInfo = res.userInfo;
-                            _this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
-                            _this.props.setIsLogin(true);
-                        }
-                    }).then()
+                    _this.getInfo()
                 }).catch(err => {
                     console.log(err);
                 })
@@ -161,7 +166,29 @@ class Mine extends Component<IProps, PageState> {
     }
 
     componentDidMount(): void {
+        new Promise((resolve) => {
+            Taro.getStorage({
+                key: 'openid',
+                success() {
+                    resolve(true)
+                },
+                fail() {
+                    resolve(false)
+                }
+            }).catch(() => {})
+        }).then(res => {
+            if (res) {
+                this.getInfo()
+            }
+        })
+    }
 
+    componentDidShow() {
+
+    }
+
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<PageState>, snapshot?: any): void {
+        console.log(this.refs.name);
     }
 
     render() {
@@ -173,7 +200,7 @@ class Mine extends Component<IProps, PageState> {
                     {/*<OpenData type='userAvatarUrl' className='avatar'/>*/}
                     {
                         this.props.app.isLogin ?
-                            <Image src={this.props.app.selfInfo.avatarUrl} className='avatar'/>
+                            <OpenData type='userAvatarUrl' className='avatar'/>
                             :
                             <View className='avatar' style={{backgroundColor: 'white'}}> </View>
                     }
@@ -182,7 +209,7 @@ class Mine extends Component<IProps, PageState> {
                         {
                             this.props.app.isLogin ?
                                 // {this.props.app.selfInfo.nick}</OpenData>
-                                <OpenData type="userNickName" className='nick'/> :
+                                <OpenData ref='name' type="userNickName" className='nick'/> :
                                 <Button className='nick btn' openType='getUserInfo'
                                         onGetUserInfo={this.login.bind(this)}
                                 >点击登录</Button>

@@ -8,6 +8,7 @@ export default {
         'pages/mine/index',
         'pages/shoppingCart/index',
         'pages/report/index',
+        'pages/paymentPage/index'
     ],
     window: {
         backgroundTextStyle: 'light',

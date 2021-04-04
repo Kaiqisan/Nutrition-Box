@@ -54,7 +54,7 @@ export default {
             },
             // mode: 'cors',
             xhrFields: {withCredentials: false},
-            timeout: 3000,
+            timeout: 5000,
             success(res: callBackMessageType): any {
                 // setCookie(res);
                 if (res.statusCode === HTTP_STATUS.NOT_FOUND) {
