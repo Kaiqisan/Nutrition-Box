@@ -1,8 +1,8 @@
 export default {
     pages: [
+        'pages/main/index',
         'pages/production/index',
         'pages/packDetails/index',
-        'pages/main/index',
         'pages/confirmPage/index',
         'pages/allProduction/index',
         'pages/mine/index',
@@ -25,31 +25,31 @@ export default {
                 pagePath: "pages/main/index",
                 text: "首页",
                 iconPath: "./assets/images/home.png",
-                selectedIconPath: "./assets/images/home.png"
+                selectedIconPath: "./assets/images/home-a.png"
             },
             {
                 pagePath: "pages/report/index",
                 text: "报告",
-                iconPath: "./assets/images/home.png",
-                selectedIconPath: "./assets/images/home.png"
+                iconPath: "./assets/images/report.png",
+                selectedIconPath: "./assets/images/report-a.png"
             },
             {
                 pagePath: "pages/production/index",
                 text: "产品",
-                iconPath: "./assets/images/home.png",
-                selectedIconPath: "./assets/images/home.png"
+                iconPath: "./assets/images/production.png",
+                selectedIconPath: "./assets/images/production-a.png"
             },
             {
                 pagePath: "pages/shoppingCart/index",
                 text: "购物车",
-                iconPath: "./assets/images/home.png",
-                selectedIconPath: "./assets/images/home.png"
+                iconPath: "./assets/images/shoppingCart.png",
+                selectedIconPath: "./assets/images/shoppingCart-a.png"
             },
             {
                 pagePath: "pages/mine/index",
                 text: "我的",
-                iconPath: "./assets/images/home.png",
-                selectedIconPath: "./assets/images/home.png"
+                iconPath: "./assets/images/mine.png",
+                selectedIconPath: "./assets/images/mine-a.png"
             },
         ]
     }

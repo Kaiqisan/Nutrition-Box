@@ -178,7 +178,7 @@ class ShoppingCart extends Component<IProps, PageState> {
                                     <View className='cont'>
                                         <Image className='cont-img' src={require('../../assets/images/box.jpg')}/>
                                         <View className='cont-text'>
-                                            <Text className='name'>Kaiqisan的 定制版每日维生素补充包</Text>
+                                            <Text className='name'>Kaiqi的 定制版每日维生素补充包</Text>
                                             <Text className='price'>￥{item.total}</Text>
                                         </View>
                                     </View>

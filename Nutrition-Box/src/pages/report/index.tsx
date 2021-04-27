@@ -30,7 +30,14 @@ type PageDispatchProps = {
 }
 
 
-type PageState = {}
+type PageState = {
+    questionnaireList: Array<{
+        date: string,
+        name: string,
+        num: number,
+        questionnaireId: number
+    }>
+}
 
 type IProps = PageStateProps & PageDispatchProps
 
@@ -44,7 +51,16 @@ interface Report {
 class Report extends Component<IProps, PageState> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            questionnaireList: [
+                {
+                    date: '2021/04/01',
+                    name: 'Kaiqisan',
+                    num: 6,
+                    questionnaireId: 146464
+                }
+            ]
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -74,9 +90,20 @@ class Report extends Component<IProps, PageState> {
         return (
             <View className='report-main'>
                 {/*<AtActivityIndicator size={35}> </AtActivityIndicator>*/}
-                <Image className='not-found-img' src={require("../../assets/images/not-found.png")} />
-                <Text className='no-report'>暂无报告...</Text>
-                <Button className='btn' onClick={this.goConfirmPage.bind()}>立即填问卷</Button>
+                {
+                    this.state.questionnaireList.length ?
+                        <View className='report-list'>
+                            <View className='report-list-cont'>
+
+                            </View>
+                        </View> : <View>
+                            <Image className='not-found-img' src={require("../../assets/images/not-found.png")}/>
+                            <Text className='no-report'>暂无报告...</Text>
+                            <Button className='btn' onClick={this.goConfirmPage.bind()}>立即填问卷</Button>
+                        </View>
+
+                }
+
             </View>
         )
     }

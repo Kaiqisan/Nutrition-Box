@@ -99,6 +99,7 @@ class PackDetails extends Component<IProps, PageState> {
             if (router) {
                 if (router.params.boxId === '0') {
                     api.post('/box/get', {openId}).then(res => {
+                        console.log(res.data);
                         if (res.data.data) {
                             let list = res.data.data;
                             list.forEach(item => {
@@ -305,16 +306,47 @@ class PackDetails extends Component<IProps, PageState> {
 
     addInCart() {
         let router = Taro.getCurrentInstance().router;
-        let boxId = router.params.boxId;
-        let productIds: string[] = [];
-        this.state.pillList.forEach(item => {
-            productIds.push(item.id)
-        });
-        api.post('/box/move', {boxId, productIds , month: this.state.month ? 1 : 3}).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        })
+        if (router) {
+            let boxId = router.params.boxId;
+            let productIds: string[] = [];
+            if (router.params.boxId === '0') {
+                this.state.pillList.forEach(item => {
+                    productIds.push(item.id)
+                });
+                let openId: string;
+                Taro.getStorage({
+                    key: 'openid',
+                    success(res) {
+                        openId = res.data
+                    }
+                }).then(() => {
+                    api.post('/box/move', {openId, boxId, productIds, month: this.state.month ? 1 : 3}).then(res => {
+                        console.log(res);
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                })
+            } else {
+                this.state.pillList.forEach(item => {
+                    productIds.push(item.id)
+                });
+                let openId: string;
+                Taro.getStorage({
+                    key: 'openid',
+                    success(res) {
+                        openId = res.data
+                    }
+                }).then(() => {
+                    api.post('/cartBox/update', {openId, boxId, productIds, month: this.state.month ? 1 : 3}).then(res => {
+                        console.log(res);
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                })
+            }
+        }
+
+
     }
 
     render() {
