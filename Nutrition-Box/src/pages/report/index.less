@@ -9,8 +9,48 @@
 .report-list {
     width: 100%;
     box-sizing: border-box;
-    padding: 15px 25px;
-    background-color: white;
+
+    .report-list-cont {
+        border-radius: 15px;
+        padding: 25px 30px;
+        margin: 20px 0;
+        background-color: white;
+
+        .head{
+            margin: 0 0 35px 0;
+            .date {
+                font-size: 35px;
+                color: #7F7F7F;
+                display: block;
+            }
+        }
+
+        .body {
+            margin: 0 0 25px 0;
+
+            .name {
+                font-size: 44px;
+                font-weight: 900;
+            }
+        }
+
+        .foot {
+            display: flex;
+            justify-content: space-between;
+
+            .num {
+                display: block;
+                color: #7F7F7F;
+                margin: auto 0;
+            }
+
+            .goShoppingCart {
+                border-radius: 60px;
+                padding: 10px 45px;
+                background-color: #ffe93e;
+            }
+        }
+    }
 }
 
 .no-report {

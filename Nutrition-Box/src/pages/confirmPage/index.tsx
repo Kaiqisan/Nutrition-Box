@@ -2,7 +2,7 @@ import React, {Component, ComponentClass} from 'react'
 
 
 import {connect} from 'react-redux'
-import {View} from '@tarojs/components'
+import {Text, View} from '@tarojs/components'
 // import Taro from "@tarojs/taro"
 
 import './index.less'
@@ -29,8 +29,28 @@ class ConfirmPage extends Component<IProps, PageState>{
     }
 
     render() {
-        return <View>
-            问卷页面，待开发中....
+        return <View className='confirmPage-main'>
+            <View className='body'>
+                <View className='head-line'> </View>
+                <Text className='title'>PERSONAL</Text>
+                <Text className='title'>NUTRITION</Text>
+                <Text className='title'>QUESTIONNAIRE</Text>
+                <Text className='title'>个人营养问卷</Text>
+                <View className='tips' style={{marginTop: '30Px'}}>
+                    <Text className='point'>·</Text>
+                    <Text className='cont'>完成问卷大概需要5~10分钟</Text>
+                </View>
+                <View className='tips'>
+                    <Text className='point'>·</Text>
+                    <Text className='cont'>问卷由 Nutrition-Box 团队设计</Text>
+                </View>
+                <View className='tips' style={{marginBottom: '30Px'}}>
+                    <Text className='point'>·</Text>
+                    <Text className='cont'>采用国际营养学界主流的远程信息收集法 -- 「膳食频率问卷法(FFQs)」</Text>
+                </View>
+                <View className='head-line'> </View>
+                <View className='btn'>开始答题</View>
+            </View>
         </View>;
     }
 }

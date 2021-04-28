@@ -94,7 +94,16 @@ class Report extends Component<IProps, PageState> {
                     this.state.questionnaireList.length ?
                         <View className='report-list'>
                             <View className='report-list-cont'>
-
+                                <View className='head'>
+                                    <Text className='date'>2021/04/01</Text>
+                                </View>
+                                <View className='body'>
+                                    <Text className='name'>Kaiqisan</Text>
+                                </View>
+                                <View className='foot'>
+                                    <Text className='num'>营养师推荐：6种补剂</Text>
+                                    <View className='goShoppingCart'>去下单</View>
+                                </View>
                             </View>
                         </View> : <View>
                             <Image className='not-found-img' src={require("../../assets/images/not-found.png")}/>
