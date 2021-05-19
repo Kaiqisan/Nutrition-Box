@@ -1,6 +1,5 @@
 import React, {Component, ComponentClass} from 'react'
 
-
 import {connect} from 'react-redux'
 import {View, Button, Text, RichText} from '@tarojs/components'
 import Taro from "@tarojs/taro"

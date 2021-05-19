@@ -23,6 +23,7 @@ const INITIAL_STATE: TYPE_INITIAL_STATE = {
 };
 
 export default function app(state: TYPE_INITIAL_STATE = INITIAL_STATE, action: TypeAction): TYPE_INITIAL_STATE {
+
     switch (action.type) {
         case SET_ISLOGIN: {
             return concatState(state, 'isLogin', action.value)

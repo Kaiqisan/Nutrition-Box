@@ -3,7 +3,7 @@ import React, {Component, ComponentClass} from 'react'
 
 import {connect} from 'react-redux'
 import {Text, View} from '@tarojs/components'
-// import Taro from "@tarojs/taro"
+import Taro from "@tarojs/taro"
 
 import './index.less'
 
@@ -28,6 +28,12 @@ class ConfirmPage extends Component<IProps, PageState>{
         super(props)
     }
 
+    start() {
+        Taro.navigateTo({
+            url: '/pages/testPage/index'
+        }).then(() => {})
+    }
+
     render() {
         return <View className='confirmPage-main'>
             <View className='body'>
@@ -49,7 +55,7 @@ class ConfirmPage extends Component<IProps, PageState>{
                     <Text className='cont'>采用国际营养学界主流的远程信息收集法 -- 「膳食频率问卷法(FFQs)」</Text>
                 </View>
                 <View className='head-line'> </View>
-                <View className='btn'>开始答题</View>
+                <View className='btn' onClick={this.start.bind(this)}>开始答题</View>
             </View>
         </View>;
     }

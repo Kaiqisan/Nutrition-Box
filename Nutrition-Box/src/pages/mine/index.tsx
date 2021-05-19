@@ -104,26 +104,27 @@ class Mine extends Component<IProps, PageState> {
     }
 
     getInfo() {
-        Taro.getUserInfo({
+        wx.getUserProfile({
+            desc: "授权",
             success:(res) => {
                 let userInfo = res.userInfo;
                 this.props.setSelfInfo({nick: userInfo.nickName, avatarUrl: userInfo.avatarUrl});
                 this.props.setIsLogin(true);
             }
-        }).then()
+        })
     }
 
     login() {
-        wx.showModal({
-            title: '小贴士',
-            content: '如果要体验完整的功能，需要点击获取头像昵称来授权小程序使用哦',
-            showCancel: false,
-            confirmText: '已知悉',
-            success(res) {
-                // ...
-            }
-        });
-
+        // wx.showModal({
+        //     title: '小贴士',
+        //     content: '如果要体验完整的功能，需要点击获取头像昵称来授权小程序使用哦',
+        //     showCancel: false,
+        //     confirmText: '已知悉',
+        //     success(res) {
+        //         // ...
+        //     }
+        // });
+        console.log("ok");
         let _this: Mine = this;
 
         Taro.login({
@@ -209,7 +210,7 @@ class Mine extends Component<IProps, PageState> {
                         {
                             this.props.app.isLogin ?
                                 // {this.props.app.selfInfo.nick}</OpenData>
-                                <OpenData ref='name' type="userNickName" className='nick'/> :
+                                <OpenData type="userNickName" className='nick'/> :
                                 <Button className='nick btn' openType='getUserInfo'
                                         onGetUserInfo={this.login.bind(this)}
                                 >点击登录</Button>

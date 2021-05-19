@@ -1,5 +1,6 @@
 export default {
     pages: [
+        'pages/testPage/index',
         'pages/main/index',
         'pages/production/index',
         'pages/packDetails/index',
@@ -8,7 +9,7 @@ export default {
         'pages/mine/index',
         'pages/shoppingCart/index',
         'pages/report/index',
-        'pages/paymentPage/index'
+        'pages/paymentPage/index',
     ],
     window: {
         backgroundTextStyle: 'light',
