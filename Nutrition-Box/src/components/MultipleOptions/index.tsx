@@ -7,23 +7,27 @@ import {View} from "@tarojs/components";
 type Props = {
     title: string,
     choice: Array<{
-        text: string,
-        isSelected?: boolean
+        text: string
     }>,
-    goNext: () => void
+    goNext: () => void,
+    getRes: (res: number) => void
 }
 
 
-const MultipleOptions: FC<Props> = ({title, choice, goNext}) => {
-    let [_choice, setChoice] = useState(choice);
-    // let _choice = new Array(...choice);
+const MultipleOptions: FC<Props> = ({title, choice, goNext, getRes}) => {
+    let [_choice, setChoice] = useState(new Array(choice.length).fill(false));
 
     let doSelect = (i: number) => {
-        let a = _choice.concat();
-        // _choice[i].isSelected = !_choice[i].isSelected
-        a[i].isSelected = !a[i].isSelected;
+        let a = _choice;
+        a[i] = !a[i];
         setChoice(a);
-        goNext()
+        for (let i = 0; i < _choice.length; i++) {
+            if (_choice[i]) {
+                getRes(i);
+                break;
+            }
+        }
+        goNext();
     };
     
     useEffect(() => {
@@ -34,8 +38,8 @@ const MultipleOptions: FC<Props> = ({title, choice, goNext}) => {
         <View className='title'>{title}</View>
         <View className='choice'>
             {
-                _choice.length ? _choice.map((item, i) => {
-                    return <View className={item.isSelected ? 'choice-cont-a' : 'choice-cont'}
+                choice.length ? choice.map((item, i) => {
+                    return <View className={_choice[i] ? 'choice-cont-a' : 'choice-cont'}
                                  onClick={() => {
                                      doSelect(i);
                                  }}
