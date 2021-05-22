@@ -10,6 +10,9 @@ import './index.less'
 import MultipleOptions from "../../components/MultipleOptions";
 import InputComp from "../../components/InputComp";
 import DoubleOptions from "../../components/DoubleOptions";
+import MultipleOptionsWithUI from "../../components/MultipleOptionsWithUI";
+import MiddleAnime from "../../components/MiddleAnime";
+import duplicateCodes from "../../utils/duplicateCodes";
 
 type PageStateProps = {}
 
@@ -19,7 +22,9 @@ type PageState = {
     allData: any,
     nowQuestionList: any,
     currentQuestion: number,
-    allowClick: boolean
+    allowClick: boolean,
+    doSel: boolean,
+    multipleOptionsWithUIMsg: number[]
 }
 type IProps = PageStateProps & PageDispatchProps
 
@@ -29,6 +34,28 @@ class TestPage extends Component<IProps, PageState> {
         super(props);
         this.state = {
             allData: [
+                {
+                    type: 'middleAnime',
+                    process: 0,
+                    transform: 0,
+                    transition: 0.5,
+                },
+                {
+                    type: 'multipleOptionsWithUI',
+                    UISize: 0,
+                    title: '请选择营养目标',
+                    transform: 0,
+                    transition: 0.5,
+                    question: [{text: '皮肤'}, {text: '情绪,压力或抑郁'}, {text: '脑力'}, {text: '疲劳,睡眠质量'}, {text: '头发'}],
+                },
+                {
+                    type: 'multipleOptionsWithUI',
+                    UISize: 1,
+                    title: '请选择优先的营养目标',
+                    transform: 0,
+                    transition: 0.5,
+                    question: [{text: '皮肤'}, {text: '情绪,压力或抑郁'}, {text: '脑力'}, {text: '疲劳,睡眠质量'}, {text: '头发'}],
+                },
                 {
                     type: 'multipleOpt',
                     title: '问题1',
@@ -56,13 +83,7 @@ class TestPage extends Component<IProps, PageState> {
                     transform: 0,
                     transition: 0.5,
                 },
-                {
-                    type: 'multipleOpt',
-                    title: '问题3',
-                    transform: 0,
-                    transition: 0.5,
-                    question: [{text: '问题一'}, {text: '218-38'}],
-                },
+
                 {
                     type: 'multipleOpt',
                     title: '问题4',
@@ -80,7 +101,9 @@ class TestPage extends Component<IProps, PageState> {
             ],
             nowQuestionList: [],
             currentQuestion: 0,
-            allowClick: true
+            allowClick: true,
+            doSel: true,
+            multipleOptionsWithUIMsg: []
         }
     }
 
@@ -102,7 +125,25 @@ class TestPage extends Component<IProps, PageState> {
         this.setState({
             nowQuestionList: this.state.nowQuestionList
         });
-        console.log(this.state.nowQuestionList);
+        this.isMiddleAnime(this.state.currentQuestion);
+        // console.log(this.state.nowQuestionList);
+    }
+
+    @duplicateCodes.Watch({
+        'currentQuestion'(val: number, newVal: number) {
+            this.isMiddleAnime(newVal);
+        }
+    })
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<PageState>, snapshot?: any): void {
+
+    }
+
+    isMiddleAnime(newVal: number) {
+        if (this.state.allData[newVal].type === 'middleAnime') {
+            setTimeout(() => {
+                this.goNext()
+            }, 2500)
+        }
     }
 
     onHide() {
@@ -110,8 +151,14 @@ class TestPage extends Component<IProps, PageState> {
     }
 
     // 传参，如果是1就是下一题，如果是0就是上一题
+    // TODO 到中间过场动画这里的衔接不是很好需要改进
     goNext() {
+        console.log();
+        if (this.state.currentQuestion === this.state.allData.length - 2) {
+            return
+        }
         if (this.state.allowClick) {
+            console.log('done');
             this.setState({
                 allowClick: !this.state.allowClick
             });
@@ -129,10 +176,11 @@ class TestPage extends Component<IProps, PageState> {
             setTimeout(() => {
                 for (let i = 0; i < list.length; i++) {
                     list[i].transition = 0;
+                    this.setState({
+                        nowQuestionList: list
+                    });
                 }
-                this.setState({
-                    nowQuestionList: list
-                });
+
                 // list[a].transform = 0;
                 // this.setState({
                 //     nowQuestionList: list
@@ -154,16 +202,16 @@ class TestPage extends Component<IProps, PageState> {
                         list[i].transition = 0.5;
                         this.setState({
                             nowQuestionList: list
-                        })
+                        });
                     }
+
                     a++;
                     this.setState({
                         currentQuestion: a,
                         allowClick: !this.state.allowClick
                     });
-                    console.log(this.state.nowQuestionList);
-                }, 0)
-            }, 550)
+                }, 100)
+            }, 500)
         }
     }
 
@@ -221,15 +269,37 @@ class TestPage extends Component<IProps, PageState> {
                         currentQuestion: a,
                         allowClick: !this.state.allowClick
                     });
-                }, 0)
+                }, 80)
             }, 500)
         }
 
     }
 
+    // 传给子组件，通知父组件该更新了
+    doUpdate() {
+        this.setState({
+            doSel: !this.state.doSel
+        })
+    }
+
     // 子组件通信父组件的方法
-    getRes(res: string | number) {
+    getRes(res: string | number | boolean[]) {
         console.log(res, 'dddd');
+    }
+
+    multipleOptionsWithUISendMsg(i: number) {
+        let arr = this.state.multipleOptionsWithUIMsg.concat();
+        if (!arr.includes(i)) {
+            arr.push(i);
+        }
+        arr.push(i);
+        console.log(i, arr, 'dsad');
+        arr.sort((a, b) => {
+            return a - b
+        });
+        this.setState({
+            multipleOptionsWithUIMsg: arr
+        })
     }
 
     render() {
@@ -253,14 +323,25 @@ class TestPage extends Component<IProps, PageState> {
                                 item.type === 'multipleOpt' ?
                                     <MultipleOptions title={item.title} choice={item.question}
                                                      goNext={this.goNext.bind(this)}
-                                                     getRes={this.getRes}
-                                    /> : item.type === 'input' ?
-                                    <InputComp title={item.title}
-                                               goNext={this.goNext.bind(this)} getRes={this.getRes}/> :
-                                    item.type === 'doubleOptions' ?
-                                        <DoubleOptions getRes={this.getRes} goNext={this.goNext.bind(this)} title={item.title}
-                                                       choice={item.question}/> :
-                                        <View style={{width: '100vw'}}> </View>
+                                                     getRes={this.getRes}/> :
+                                    item.type === 'input' ?
+                                        <InputComp title={item.title}
+                                                   goNext={this.goNext.bind(this)} getRes={this.getRes}/> :
+                                        item.type === 'doubleOptions' ?
+                                            <DoubleOptions getRes={this.getRes} goNext={this.goNext.bind(this)}
+                                                           title={item.title}
+                                                           choice={item.question}/> :
+                                            item.type === 'multipleOptionsWithUI' ?
+                                                <MultipleOptionsWithUI title={item.title} choice={item.question}
+                                                                       goNext={this.goNext.bind(this)}
+                                                                       getRes={this.getRes}
+                                                                       type={item.UISize}
+                                                                       sendMsg={this.multipleOptionsWithUISendMsg.bind(this)}
+                                                                       receiveMsg={this.state.multipleOptionsWithUIMsg}
+                                                                       doUpdate={this.doUpdate.bind(this)}/> :
+                                                item.type === 'middleAnime' ?
+                                                    <MiddleAnime process={item.process}/> :
+                                                    <View style={{width: '100vw'}}> </View>
                             }
                         </View>
                     })

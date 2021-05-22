@@ -1,7 +1,7 @@
 import {FC} from "@tarojs/taro";
 import "./index.less";
 import React, {useState, useEffect} from "react";
-import {View} from "@tarojs/components";
+import {Image, View} from "@tarojs/components";
 
 
 type Props = {
@@ -35,6 +35,7 @@ const MultipleOptions: FC<Props> = ({title, choice, goNext, getRes}) => {
     });
 
     return <View className='MultipleOptions-main'>
+        <Image className='UI' src={require('../../assets/images/pill.png')} />
         <View className='title'>{title}</View>
         <View className='choice'>
             {

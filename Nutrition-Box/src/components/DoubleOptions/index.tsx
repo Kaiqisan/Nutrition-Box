@@ -12,10 +12,8 @@ type Props = {
 
 const DoubleOptions: FC<Props> = ({title, choice, goNext, getRes}) => {
     let [isSelectedList, setIsSelectedList] = useState(new Array(choice.length).fill(false));
-    console.log(choice, 'sddasd');
 
     let doSelect = (i: number) => {
-        console.log(i);
         let a = isSelectedList;
         a[i] = !a[i];
         setIsSelectedList(a);
