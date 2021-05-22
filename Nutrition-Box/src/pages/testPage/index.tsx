@@ -13,6 +13,7 @@ import DoubleOptions from "../../components/DoubleOptions";
 import MultipleOptionsWithUI from "../../components/MultipleOptionsWithUI";
 import MiddleAnime from "../../components/MiddleAnime";
 import duplicateCodes from "../../utils/duplicateCodes";
+import MultipleOptionsWithTwoLine from "../../components/MultipleOptionsWithTwoLine";
 
 type PageStateProps = {}
 
@@ -34,6 +35,16 @@ class TestPage extends Component<IProps, PageState> {
         super(props);
         this.state = {
             allData: [
+                {
+                    type: 'multipleOptionsWithTwoLine',
+                    title: '以下饮料喝的最多的是？？',
+                    maximumSel: 5,
+                    hasHeadUI: true,
+                    hasContUI: true,
+                    choice: [{text: '白水'}, {text: '咖啡'}, {text: '茶'}, {text: '可乐'}, {text: '阿帕茶'},],
+                    transform: 0,
+                    transition: 0.5,
+                },
                 {
                     type: 'middleAnime',
                     process: 0,
@@ -341,7 +352,15 @@ class TestPage extends Component<IProps, PageState> {
                                                                        doUpdate={this.doUpdate.bind(this)}/> :
                                                 item.type === 'middleAnime' ?
                                                     <MiddleAnime process={item.process}/> :
-                                                    <View style={{width: '100vw'}}> </View>
+                                                    item.type === 'multipleOptionsWithTwoLine' ?
+                                                        <MultipleOptionsWithTwoLine title={item.title} maximumSel={1}
+                                                                                    hasHeadUI={item.hasHeadUI}
+                                                                                    hasContUI={item.hasContUI}
+                                                                                    choice={item.choice}
+                                                                                    goNext={this.goNext.bind(this)}
+                                                                                    doUpdate={this.doUpdate.bind(this)}
+                                                                                    getRes={this.getRes}/> :
+                                                        <View style={{width: '100vw'}}> </View>
                             }
                         </View>
                     })
