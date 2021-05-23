@@ -13,24 +13,44 @@ type Props = {
         imageUrl?: string
     }>,
     goNext: () => void,
-    getRes: (res: number) => void
+    getRes: (res: any[]) => void,
+    doUpdate: () => void
 }
 
 const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, hasContUI, choice, goNext, getRes, doUpdate}) => {
     let [remindMsg, setRemindMsg] = useState('请选择');
     let [_choice, setChoice] = useState(new Array(choice.length).fill(false));
-
+    let [flag, setFlag] = useState(false);
+    
+    // console.log('update!');
+    
     let doSelect = (i: number) => {
-        let a = _choice;
+        let a = _choice.concat();
         a[i] = !a[i];
         setChoice(a);
-        // for (let i = 0; i < _choice.length; i++) {
-        //     if (_choice[i]) {
-        //         getRes(i);
-        //         break;
-        //     }
-        // }
+        // goNext()
+        if (maximumSel) {
+            let sum = 0;
+            a.forEach(item => {
+                if (item) {
+                    sum++
+                }
+            });
+            if (sum > maximumSel) {
+                setRemindMsg(`最多可选${maximumSel}个`);
+                setFlag(false)
+            } else {
+                setFlag(true)
+            }
+        }
         doUpdate()
+    };
+
+    let submit = () => {
+        if (flag) {
+            goNext();
+            getRes(_choice)
+        }
     };
 
     return <View className='MultipleOptionsWithTwoLine-main'>
@@ -55,6 +75,9 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
                 })
             }
         </View>
+        <View className={flag ? 'submit' : 'submit-disable'} onClick={() => {
+            submit()
+        }}>确定</View>
     </View>
 };
 

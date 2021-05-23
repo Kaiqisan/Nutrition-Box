@@ -38,19 +38,20 @@ class TestPage extends Component<IProps, PageState> {
                 {
                     type: 'multipleOptionsWithTwoLine',
                     title: '以下饮料喝的最多的是？？',
-                    maximumSel: 5,
+                    maximumSel: 4,
                     hasHeadUI: true,
                     hasContUI: true,
                     choice: [{text: '白水'}, {text: '咖啡'}, {text: '茶'}, {text: '可乐'}, {text: '阿帕茶'},],
                     transform: 0,
                     transition: 0.5,
                 },
-                {
-                    type: 'middleAnime',
-                    process: 0,
-                    transform: 0,
-                    transition: 0.5,
-                },
+                // TODO:这个过场动画会带来过分的性能损耗，需要优化
+                // {
+                //     type: 'middleAnime',
+                //     process: 0,
+                //     transform: 0,
+                //     transition: 0.5,
+                // },
                 {
                     type: 'multipleOptionsWithUI',
                     UISize: 0,
@@ -148,6 +149,10 @@ class TestPage extends Component<IProps, PageState> {
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<PageState>, snapshot?: any): void {
 
     }
+
+    // shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<PageState>, nextContext: any): boolean {
+    //     return this.state.doSel === nextState.doSel;
+    // }
 
     isMiddleAnime(newVal: number) {
         if (this.state.allData[newVal].type === 'middleAnime') {
@@ -299,15 +304,16 @@ class TestPage extends Component<IProps, PageState> {
     }
 
     multipleOptionsWithUISendMsg(i: number) {
+        // TODO： 解决取消选择时的数组成员删除
         let arr = this.state.multipleOptionsWithUIMsg.concat();
         if (!arr.includes(i)) {
             arr.push(i);
         }
         arr.push(i);
-        console.log(i, arr, 'dsad');
         arr.sort((a, b) => {
             return a - b
         });
+        console.log(i, arr, 'dsad');
         this.setState({
             multipleOptionsWithUIMsg: arr
         })
@@ -353,7 +359,8 @@ class TestPage extends Component<IProps, PageState> {
                                                 item.type === 'middleAnime' ?
                                                     <MiddleAnime process={item.process}/> :
                                                     item.type === 'multipleOptionsWithTwoLine' ?
-                                                        <MultipleOptionsWithTwoLine title={item.title} maximumSel={1}
+                                                        <MultipleOptionsWithTwoLine title={item.title}
+                                                                                    maximumSel={item.maximumSel}
                                                                                     hasHeadUI={item.hasHeadUI}
                                                                                     hasContUI={item.hasContUI}
                                                                                     choice={item.choice}

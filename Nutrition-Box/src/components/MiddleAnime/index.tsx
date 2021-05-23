@@ -52,15 +52,6 @@ let MiddleAnime: FC<Props> = ({process}) => {
         }, 1500)
     }, 0);
 
-    // setTimeout(() => {
-    //     let res = processList.concat();
-    //     for (let i = 0; i < process - 1; i++) {
-    //         res[i].isFinish = true
-    //     }
-    //     setProcessList(res);
-    //     doUpdate()
-    // }, 1500);
-
     return <View className='MiddleAnime-main'>
         <View className='body'>
             {
