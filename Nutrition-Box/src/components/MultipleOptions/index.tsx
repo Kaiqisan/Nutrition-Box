@@ -10,11 +10,12 @@ type Props = {
         text: string
     }>,
     goNext: () => void,
-    getRes: (res: number) => void
+    getRes: (res: number) => void,
+    haiNoneChoice: boolean
 }
 
 
-const MultipleOptions: FC<Props> = ({title, choice, goNext, getRes}) => {
+const MultipleOptions: FC<Props> = ({title, choice, goNext, getRes, haiNoneChoice}) => {
     let [_choice, setChoice] = useState(new Array(choice.length).fill(false));
 
     let doSelect = (i: number) => {
@@ -48,6 +49,12 @@ const MultipleOptions: FC<Props> = ({title, choice, goNext, getRes}) => {
                 }) : ''
             }
         </View>
+        {
+            haiNoneChoice ? <View className={'submit'} onClick={() => {
+            doSelect(100)
+        }}>无</View> : ''
+        }
+
     </View>
 };
 

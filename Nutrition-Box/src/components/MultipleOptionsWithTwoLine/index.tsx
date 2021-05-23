@@ -20,7 +20,8 @@ type Props = {
 const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, hasContUI, choice, goNext, getRes, doUpdate}) => {
     let [remindMsg, setRemindMsg] = useState('请选择');
     let [_choice, setChoice] = useState(new Array(choice.length).fill(false));
-    let [flag, setFlag] = useState(false);
+    let [flag, setFlag] = useState(Boolean(!maximumSel));
+
     
     // console.log('update!');
     
@@ -36,7 +37,7 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
                     sum++
                 }
             });
-            if (sum > maximumSel) {
+            if (sum > maximumSel || sum === 0) {
                 setRemindMsg(`最多可选${maximumSel}个`);
                 setFlag(false)
             } else {
@@ -75,9 +76,10 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
                 })
             }
         </View>
+        {/* TODO: 在没有限制选择数量的时候，选择的时候按钮文字应从 ‘无’ 到 ‘确认’ */}
         <View className={flag ? 'submit' : 'submit-disable'} onClick={() => {
             submit()
-        }}>确定</View>
+        }}>{maximumSel ? '确定': '无'}</View>
     </View>
 };
 

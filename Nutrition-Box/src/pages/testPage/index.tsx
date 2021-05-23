@@ -38,7 +38,7 @@ class TestPage extends Component<IProps, PageState> {
                 {
                     type: 'multipleOptionsWithTwoLine',
                     title: '以下饮料喝的最多的是？？',
-                    maximumSel: 4,
+                    maximumSel: 0,
                     hasHeadUI: true,
                     hasContUI: true,
                     choice: [{text: '白水'}, {text: '咖啡'}, {text: '茶'}, {text: '可乐'}, {text: '阿帕茶'},],
@@ -46,12 +46,12 @@ class TestPage extends Component<IProps, PageState> {
                     transition: 0.5,
                 },
                 // TODO:这个过场动画会带来过分的性能损耗，需要优化
-                // {
-                //     type: 'middleAnime',
-                //     process: 0,
-                //     transform: 0,
-                //     transition: 0.5,
-                // },
+                {
+                    type: 'middleAnime',
+                    process: 0,
+                    transform: 0,
+                    transition: 0.5,
+                },
                 {
                     type: 'multipleOptionsWithUI',
                     UISize: 0,
@@ -74,6 +74,7 @@ class TestPage extends Component<IProps, PageState> {
                     transform: 0,
                     transition: 0.5,
                     question: [{text: '18-28'}, {text: '28-38'}, {text: '38-48'}, {text: '48-58'}, {text: '58-68'}],
+                    haiNoneChoice: true,
                 },
 
                 {
@@ -340,6 +341,7 @@ class TestPage extends Component<IProps, PageState> {
                                 item.type === 'multipleOpt' ?
                                     <MultipleOptions title={item.title} choice={item.question}
                                                      goNext={this.goNext.bind(this)}
+                                                     haiNoneChoice={item.haiNoneChoice}
                                                      getRes={this.getRes}/> :
                                     item.type === 'input' ?
                                         <InputComp title={item.title}

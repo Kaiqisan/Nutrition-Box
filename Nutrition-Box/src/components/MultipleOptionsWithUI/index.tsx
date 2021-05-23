@@ -13,7 +13,7 @@ type Props = {
     doUpdate: () => void,
     type: 0 | 1,
     sendMsg: (i: number) => void,
-    receiveMsg: number[]
+    receiveMsg: number[],
 }
 
 const MultipleOptionsWithUI: FC<Props> = ({title, choice, goNext, getRes, doUpdate, type, sendMsg, receiveMsg}) => {
@@ -84,9 +84,11 @@ const MultipleOptionsWithUI: FC<Props> = ({title, choice, goNext, getRes, doUpda
             }
 
         </ScrollView>
-        <View className={flag ? 'submit' : 'submit-disable'} onClick={() => {
-            submit()
-        }}>确定</View>
+        {
+            !type ? <View className={flag ? 'submit' : 'submit-disable'} onClick={() => {
+                submit()
+            }}>确定</View> : ''
+        }
     </View>
 };
 
