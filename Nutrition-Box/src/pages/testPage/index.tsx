@@ -25,7 +25,15 @@ type PageState = {
     currentQuestion: number,
     allowClick: boolean,
     doSel: boolean,
-    multipleOptionsWithUIMsg: number[]
+    multipleOptionsWithUIMsg: number[],
+    processList: {
+        list: Array<{
+            text: string,
+            isFinish: boolean,
+            isNext: boolean
+        }>,
+        transition: number
+    }
 }
 type IProps = PageStateProps & PageDispatchProps
 
@@ -48,7 +56,7 @@ class TestPage extends Component<IProps, PageState> {
                 // TODO:这个过场动画会带来过分的性能损耗，需要优化
                 {
                     type: 'middleAnime',
-                    process: 0,
+                    process: 2,
                     transform: 0,
                     transition: 0.5,
                 },
@@ -116,7 +124,32 @@ class TestPage extends Component<IProps, PageState> {
             currentQuestion: 0,
             allowClick: true,
             doSel: true,
-            multipleOptionsWithUIMsg: []
+            multipleOptionsWithUIMsg: [],
+            processList: {
+                list: [
+                    {
+                        text: '基本信息',
+                        isFinish: false,
+                        isNext: false,
+                    },
+                    {
+                        text: '营养目标',
+                        isFinish: false,
+                        isNext: false,
+                    },
+                    {
+                        text: '生活习惯',
+                        isFinish: false,
+                        isNext: false,
+                    },
+                    {
+                        text: '身体状况',
+                        isFinish: false,
+                        isNext: false,
+                    }
+                ],
+                transition: 0
+            }
         }
     }
 
@@ -156,7 +189,36 @@ class TestPage extends Component<IProps, PageState> {
     // }
 
     isMiddleAnime(newVal: number) {
+        // console.log('done');
         if (this.state.allData[newVal].type === 'middleAnime') {
+            setTimeout(() => {
+                let res = {
+                    list: this.state.processList.list.concat(),
+                    transition: 0
+                };
+                for (let i = 0; i < this.state.allData[newVal].process; i++) {
+                    res.list[i].isFinish = true
+                }
+                this.setState({
+                    processList: res
+                });
+                // setProcessList(res);
+
+                setTimeout(() => {
+                    res.transition = 0.5;
+                    this.setState({
+                        processList: res
+                    });
+                    setTimeout(() => {
+                        res.list[this.state.allData[newVal].process].isNext = true;
+                        this.setState({
+                            processList: res
+                        });
+                    }, 0)
+
+                }, 1500)
+            }, 0);
+
             setTimeout(() => {
                 this.goNext()
             }, 2500)
@@ -168,20 +230,24 @@ class TestPage extends Component<IProps, PageState> {
     }
 
     // 传参，如果是1就是下一题，如果是0就是上一题
-    // TODO 到中间过场动画这里的衔接不是很好需要改进
+    // TODO 到中间过场动画这里的衔接不是很好需要改进 ---- 已完成
+    // TODO 代码性能优化
     goNext() {
-        console.log();
         if (this.state.currentQuestion === this.state.allData.length - 2) {
             return
         }
         if (this.state.allowClick) {
-            console.log('done');
             this.setState({
                 allowClick: !this.state.allowClick
             });
             let a = this.state.currentQuestion;
+
             let list = this.state.nowQuestionList;
             list.push(JSON.parse(JSON.stringify(this.state.allData[a + 2])));
+            a++;
+            this.setState({
+                currentQuestion: a,
+            });
             for (let i = 0; i < list.length; i++) {
                 // list[i].transform = 0;
                 list[i].transform -= 100;
@@ -191,6 +257,7 @@ class TestPage extends Component<IProps, PageState> {
             });
 
             setTimeout(() => {
+
                 for (let i = 0; i < list.length; i++) {
                     list[i].transition = 0;
                     this.setState({
@@ -222,9 +289,9 @@ class TestPage extends Component<IProps, PageState> {
                         });
                     }
 
-                    a++;
+                    // a++;
                     this.setState({
-                        currentQuestion: a,
+                        // currentQuestion: a,
                         allowClick: !this.state.allowClick
                     });
                 }, 100)
@@ -232,6 +299,7 @@ class TestPage extends Component<IProps, PageState> {
         }
     }
 
+    // TODO：完善这里的逻辑问题，返回的时候需要跳过过场动画页面
     goPrev() {
         if (!this.state.currentQuestion) {
             Taro.navigateBack().then(() => {
@@ -243,6 +311,15 @@ class TestPage extends Component<IProps, PageState> {
                 allowClick: !this.state.allowClick
             });
             let a = this.state.currentQuestion;
+            if (this.state.allData[a - 1].type === 'middleAnime') {
+                a -= 2;
+            } else {
+                a--;
+            }
+
+            this.setState({
+                currentQuestion: a,
+            });
             let list = this.state.nowQuestionList;
             for (let i = 0; i < list.length; i++) {
                 // list[i].transform = 0;
@@ -255,7 +332,7 @@ class TestPage extends Component<IProps, PageState> {
             setTimeout(() => {
                 list.pop();
                 if (a !== 1) {
-                    list.unshift(JSON.parse(JSON.stringify(this.state.allData[a - 2])));
+                    list.unshift(JSON.parse(JSON.stringify(this.state.allData[a - 1])));
                 } else {
                     list.unshift({transform: 0, transition: 0.5})
                 }
@@ -281,9 +358,9 @@ class TestPage extends Component<IProps, PageState> {
                             nowQuestionList: list
                         })
                     }
-                    a--;
+                    // a--;
                     this.setState({
-                        currentQuestion: a,
+                        // currentQuestion: a,
                         allowClick: !this.state.allowClick
                     });
                 }, 80)
@@ -304,23 +381,30 @@ class TestPage extends Component<IProps, PageState> {
         console.log(res, 'dddd');
     }
 
-    multipleOptionsWithUISendMsg(i: number) {
-        // TODO： 解决取消选择时的数组成员删除
+    // 0什么事都没有 1表示添加 2表示删除
+    // TODO: 解决返回时数组成员异常多的问题
+    multipleOptionsWithUISendMsg(i: number, flag: number) {
+        console.log(i, flag);
+        // TODO： 解决取消选择时的数组成员删除 --- 已解决
         let arr = this.state.multipleOptionsWithUIMsg.concat();
-        if (!arr.includes(i)) {
+        if (flag && flag === 2) {
             arr.push(i);
+        } else if (flag && flag === 1) {
+            let _set = new Set(arr);
+            _set.delete(i);
+            arr = Array.from(_set)
         }
-        arr.push(i);
+
         arr.sort((a, b) => {
             return a - b
         });
-        console.log(i, arr, 'dsad');
         this.setState({
             multipleOptionsWithUIMsg: arr
         })
     }
 
     render() {
+
         return <View className='testPage-main'>
             <View className='process-head'>
                 <View className='back' onClick={this.goPrev.bind(this)}>
@@ -359,7 +443,8 @@ class TestPage extends Component<IProps, PageState> {
                                                                        receiveMsg={this.state.multipleOptionsWithUIMsg}
                                                                        doUpdate={this.doUpdate.bind(this)}/> :
                                                 item.type === 'middleAnime' ?
-                                                    <MiddleAnime process={item.process}/> :
+                                                    <MiddleAnime process={item.process}
+                                                                 processList={this.state.processList}/> :
                                                     item.type === 'multipleOptionsWithTwoLine' ?
                                                         <MultipleOptionsWithTwoLine title={item.title}
                                                                                     maximumSel={item.maximumSel}

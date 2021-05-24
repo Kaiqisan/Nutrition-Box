@@ -12,7 +12,7 @@ type Props = {
     getRes: (res: any[]) => void,
     doUpdate: () => void,
     type: 0 | 1,
-    sendMsg: (i: number) => void,
+    sendMsg: (i: number, b: number) => void,
     receiveMsg: number[],
 }
 
@@ -22,13 +22,12 @@ const MultipleOptionsWithUI: FC<Props> = ({title, choice, goNext, getRes, doUpda
     let [flag, setFlag] = useState(false);
 
     let doSelect = (i: number) => {
+        let a = isSelected;
         if (type) {
-
-            sendMsg(i);
+            sendMsg(i, 0);
             goNext();
         }
-        sendMsg(i);
-        let a = isSelected;
+        sendMsg(i, a[i] ? 1 : 2);
         a[i] = !a[i];
         setIsSelected(a);
         if (doSum() > 4) {

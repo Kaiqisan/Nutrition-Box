@@ -21,27 +21,34 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
     let [remindMsg, setRemindMsg] = useState('请选择');
     let [_choice, setChoice] = useState(new Array(choice.length).fill(false));
     let [flag, setFlag] = useState(Boolean(!maximumSel));
+    let [btnText, setBtnText] = useState(maximumSel ? '确认' : '无');
 
-    
+
     // console.log('update!');
-    
+
     let doSelect = (i: number) => {
         let a = _choice.concat();
         a[i] = !a[i];
         setChoice(a);
         // goNext()
+        let sum = 0;
+        a.forEach(item => {
+            if (item) {
+                sum++
+            }
+        });
         if (maximumSel) {
-            let sum = 0;
-            a.forEach(item => {
-                if (item) {
-                    sum++
-                }
-            });
             if (sum > maximumSel || sum === 0) {
                 setRemindMsg(`最多可选${maximumSel}个`);
                 setFlag(false)
             } else {
                 setFlag(true)
+            }
+        } else {
+            if (sum) {
+                setBtnText('确认')
+            } else {
+                setBtnText('无')
             }
         }
         doUpdate()
@@ -64,14 +71,18 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
             {
                 choice.map((item, i) => {
                     if (hasContUI) {
-                        return <View className={_choice[i] ? 'choice-cont-a' : 'choice-cont'} key={i} onClick={() => {doSelect(i)}}>
+                        return <View className={_choice[i] ? 'choice-cont-a' : 'choice-cont'} key={i} onClick={() => {
+                            doSelect(i)
+                        }}>
                             <View className='wrap'>
                                 <Image className='choice-cont-img' src={require('../../assets/images/pill.png')}/>
                                 <Text className='choice-cont-text'>{item.text}</Text>
                             </View>
                         </View>
                     } else {
-                        return <View className={_choice[i] ? 'choice-cont-a' : 'choice-cont'} key={i} onClick={() => {doSelect(i)}}>{item.text}</View>
+                        return <View className={_choice[i] ? 'choice-cont-a' : 'choice-cont'} key={i} onClick={() => {
+                            doSelect(i)
+                        }}>{item.text}</View>
                     }
                 })
             }
@@ -79,7 +90,7 @@ const MultipleOptionsWithTwoLine: FC<Props> = ({title, maximumSel, hasHeadUI, ha
         {/* TODO: 在没有限制选择数量的时候，选择的时候按钮文字应从 ‘无’ 到 ‘确认’ */}
         <View className={flag ? 'submit' : 'submit-disable'} onClick={() => {
             submit()
-        }}>{maximumSel ? '确定': '无'}</View>
+        }}>{btnText}</View>
     </View>
 };
 
