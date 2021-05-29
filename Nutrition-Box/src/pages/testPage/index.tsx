@@ -54,12 +54,7 @@ class TestPage extends Component<IProps, PageState> {
                     transition: 0.5,
                 },
                 // TODO:这个过场动画会带来过分的性能损耗，需要优化
-                {
-                    type: 'middleAnime',
-                    process: 2,
-                    transform: 0,
-                    transition: 0.5,
-                },
+
                 {
                     type: 'multipleOptionsWithUI',
                     UISize: 0,
@@ -67,6 +62,12 @@ class TestPage extends Component<IProps, PageState> {
                     transform: 0,
                     transition: 0.5,
                     question: [{text: '皮肤'}, {text: '情绪,压力或抑郁'}, {text: '脑力'}, {text: '疲劳,睡眠质量'}, {text: '头发'}],
+                },
+                {
+                    type: 'middleAnime',
+                    process: 2,
+                    transform: 0,
+                    transition: 0.5,
                 },
                 {
                     type: 'multipleOptionsWithUI',
@@ -188,6 +189,7 @@ class TestPage extends Component<IProps, PageState> {
     //     return this.state.doSel === nextState.doSel;
     // }
 
+    // TODO: 用异步函数优化代码
     isMiddleAnime(newVal: number) {
         // console.log('done');
         if (this.state.allData[newVal].type === 'middleAnime') {
@@ -202,7 +204,6 @@ class TestPage extends Component<IProps, PageState> {
                 this.setState({
                     processList: res
                 });
-                // setProcessList(res);
 
                 setTimeout(() => {
                     res.transition = 0.5;
@@ -214,6 +215,15 @@ class TestPage extends Component<IProps, PageState> {
                         this.setState({
                             processList: res
                         });
+                        setTimeout(() => {
+                            for (let i = 0; i < res.list.length; i++) {
+                                res.list[i].isFinish = false;
+                                res.list[i].isNext = false;
+                            }
+                            this.setState({
+                                processList: res
+                            });
+                        }, 1000)
                     }, 0)
 
                 }, 1500)
@@ -243,8 +253,10 @@ class TestPage extends Component<IProps, PageState> {
             let a = this.state.currentQuestion;
 
             let list = this.state.nowQuestionList;
+
             list.push(JSON.parse(JSON.stringify(this.state.allData[a + 2])));
             a++;
+            console.log(a);
             this.setState({
                 currentQuestion: a,
             });
@@ -255,9 +267,8 @@ class TestPage extends Component<IProps, PageState> {
             this.setState({
                 nowQuestionList: list
             });
-
+            console.log(this.state.nowQuestionList);
             setTimeout(() => {
-
                 for (let i = 0; i < list.length; i++) {
                     list[i].transition = 0;
                     this.setState({
@@ -269,10 +280,15 @@ class TestPage extends Component<IProps, PageState> {
                 // this.setState({
                 //     nowQuestionList: list
                 // });
-                list.shift();
-                this.setState({
-                    nowQuestionList: list
-                });
+                // list.shift();
+                if (this.state.allData[a - 1].type === 'middleAnime') {
+                    list.splice(1, 1)
+                } else {
+                    list.shift()
+                }
+                // this.setState({
+                //     nowQuestionList: list
+                // });
                 for (let i = 0; i < list.length; i++) {
                     list[i].transform = 0;
                     // list[i].transform += 100;
@@ -316,7 +332,7 @@ class TestPage extends Component<IProps, PageState> {
             } else {
                 a--;
             }
-
+            console.log(a);
             this.setState({
                 currentQuestion: a,
             });
@@ -331,10 +347,17 @@ class TestPage extends Component<IProps, PageState> {
 
             setTimeout(() => {
                 list.pop();
-                if (a !== 1) {
-                    list.unshift(JSON.parse(JSON.stringify(this.state.allData[a - 1])));
+                if (a >= 1) {
+                    if (this.state.allData[a - 1].type === 'middleAnime') {
+                        list.unshift(JSON.parse(JSON.stringify(this.state.allData[a - 2] ? this.state.allData[a - 2] : {transform: 0, transition: 0.5})))
+                    } else {
+                        list.unshift(JSON.parse(JSON.stringify(this.state.allData[a - 1])))
+                    }
                 } else {
                     list.unshift({transform: 0, transition: 0.5})
+                }
+                if (this.state.allData[a + 1].type === 'middleAnime') {
+                    list[2] = JSON.parse(JSON.stringify(this.state.allData[a + 1]))
                 }
                 for (let i = 0; i < list.length; i++) {
                     list[i].transition = 0;
@@ -382,12 +405,12 @@ class TestPage extends Component<IProps, PageState> {
     }
 
     // 0什么事都没有 1表示添加 2表示删除
-    // TODO: 解决返回时数组成员异常多的问题
+    // TODO: 解决返回时数组成员异常多的问题 --- 后面需要在本地存储就可以解决
     multipleOptionsWithUISendMsg(i: number, flag: number) {
         console.log(i, flag);
         // TODO： 解决取消选择时的数组成员删除 --- 已解决
         let arr = this.state.multipleOptionsWithUIMsg.concat();
-        if (flag && flag === 2) {
+        if (flag && flag === 2 && !arr.includes(i)) {
             arr.push(i);
         } else if (flag && flag === 1) {
             let _set = new Set(arr);
@@ -398,13 +421,13 @@ class TestPage extends Component<IProps, PageState> {
         arr.sort((a, b) => {
             return a - b
         });
+        console.log(arr);
         this.setState({
             multipleOptionsWithUIMsg: arr
         })
     }
 
     render() {
-
         return <View className='testPage-main'>
             <View className='process-head'>
                 <View className='back' onClick={this.goPrev.bind(this)}>
